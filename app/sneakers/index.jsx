@@ -40,15 +40,19 @@ const SneakerView = () => {
           </View>
   )}
       />
+         
     </View>
-  );
+
+);
 };
 
 const styles = StyleSheet.create({
+  
   container: {
     
     width:'100%',
     padding: 20,
+    paddingBottom:80,
     backgroundColor: "#ebeff",
 
   },
@@ -77,7 +81,8 @@ const styles = StyleSheet.create({
     flex:1,
     flexDirection:'column'
     
-  }
+  },
+ 
 });
 
 
