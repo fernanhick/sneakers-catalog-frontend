@@ -6,9 +6,11 @@ const HomeScreen = () => {
   return (
     <View
       style={ styles.container}
+    
     >
       <Text>This is the index page.</Text>
-    </View>
+
+          </View>
   );
 }
 
