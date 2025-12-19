@@ -1,11 +1,13 @@
 //Import Stylesheet for tyling the components
-import PostImage from "@/assets/images/splash-icon.png";
+import PostImage from "@/assets/images/AppIcons/playstore.png";
 import { router } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Sneakalogue</Text>
+      <Text style={styles.title}>Welcome to SneakerHood</Text>
       <Image source={PostImage} style={styles.image} />
       <Text style={styles.text}>Catalogue all your sneakers in one place.</Text>
       
@@ -21,26 +23,31 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
     alignItems: "center",
+
   },
   image: {
     width: 200,
     height: 200,
     marginBottom: 20,
     borderRadius: 10,
-    margin: 40,
+    
   },
   title: {
-    fontSize: 30,
+    fontSize: 40,
     fontWeight: "bold",
-    alignSelf: "flex-start",
+    color: '#fff',
+    padding:30,
+    textAlign: 'center'
   },
   text: {
     fontSize: 20,
-    width: 250,
+    width: 350,
     justifyContent: "center",
-    padding:50
+    padding:50,
+        color: '#fff'
+
   },
   button:{
     backgroundColor:'#ff6600ff',
