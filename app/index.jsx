@@ -5,6 +5,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 
 const HomeScreen = () => {
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to SneakerHood</Text>
@@ -25,6 +26,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: "center",
+    backgroundColor:'#000'
 
   },
   image: {

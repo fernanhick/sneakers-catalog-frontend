@@ -24,9 +24,7 @@ const RootLayout = () => {
   >
 {/*     Assign header titles for each of the pages added to the Stack */}
     <Stack.Screen name='index' options={{title:'Home'}}/>
-    <Stack.Screen name='sneakers' options={{headerTitle:'Catalogue',
-
-    }}/>
+    <Stack.Screen name='sneakers' options={{headerTitle:'Catalogue'}}/>
   </Stack>;
 }
 
