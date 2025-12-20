@@ -1,17 +1,16 @@
 import { FlatList } from "react-native";
 import SneakerItem from "./SneakerItem";
 
-const SneakersList=({sneakers})=> {
+const SneakersList = ({ sneakers }) => {
   return (
     <>
-        <FlatList 
-          data={sneakers}
-          keyExtractor={(item)=>item.id}
-          renderItem={({item})=>
-            <SneakerItem sneaker={item}/>}
-        />
-        </>
-    );
+      <FlatList
+        data={sneakers}
+        keyExtractor={(item) => item.$id}
+        renderItem={({ item }) => <SneakerItem sneaker={item} />}
+      />
+    </>
+  );
 };
 
-export default SneakersList
+export default SneakersList;

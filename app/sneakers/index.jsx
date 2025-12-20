@@ -1,38 +1,35 @@
-import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import sneakerService from "../../services/sneakerService";
 import AddSneakerModal from "../components/AddSneakerModal";
 import SneakersList from "../components/SneakersList";
 
 const SneakerView = () => {
-  const sneakerEntry = {
-    model: "",
-    size: "",
-    uri: "",
-  };
   const [modalVisible, setModalVisible] = useState(false);
   const [alertMessageVisible, setAlertMessageVisible] = useState(false);
   const [newSneaker, setNewSneaker] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [sneakers, setSneakers] = useState([]);
 
-  const [sneakers, setSneakers] = useState([
-    { id: "1", model: "Air One", size: "7" },
-    { id: "2", model: "Air Max", size: "9" },
-    { id: "3", model: "Air Jordan", size: "8.5" },
-    { id: "4", model: "Air One", size: "7" },
-    { id: "5", model: "Air Max", size: "9" },
-    { id: "6", model: "Air Jordan", size: "8.5" },
-    { id: "7", model: "Air One", size: "7" },
-    { id: "8", model: "Air Max", size: "9" },
-    { id: "9", model: "Air Jordan", size: "8.5" },
-    { id: "10", model: "Air One", size: "7" },
-    { id: "11", model: "Air Max", size: "9" },
-    { id: "12", model: "Air Jordan", size: "8.5" },
-    { id: "13", model: "Air One", size: "7" },
-    { id: "14", model: "Air Max", size: "9" },
-    { id: "15", model: "Air Jordan", size: "8.5" },
-    { id: "16", model: "Air One", size: "7" },
-    { id: "17", model: "Air Max", size: "9" },
-    { id: "18", model: "Air Jordan", size: "8.5" },
-  ]);
+  /* UseEffect  is used for fetching the initial data from server */
+
+  useEffect(() => {
+    fetchSneakers();
+  }, []);
+
+  const fetchSneakers = async () => {
+    setLoading(true);
+    const response = await sneakerService.getSneakers();
+
+    if (response.error) {
+      setError(response.error);
+      Alert.alert("Error:", response.error);
+    } else {
+      setSneakers(response.data);
+      setError(null);
+    }
+  };
 
   /* Handle changes in the Text input and append into current object to be injected in the sneakers list */
   const handleOnChange = (text, input) => {
