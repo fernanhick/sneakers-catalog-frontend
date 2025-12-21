@@ -15,9 +15,16 @@ const databaseService = {
   },
 
   /* Created Sneakers Item in DB*/
-  async createSneaker(dbId, colId, data, id = null) {
+  /*  */
+  async createSneaker(dbId, colId, id = null, data) {
+    console.log(data, id);
     try {
-      return await database.createDocument(dbId, colId, id || undefined, data);
+      return await database.createDocument(
+        dbId,
+        colId,
+        id || undefined,
+        data || undefined
+      );
     } catch (error) {
       console.error("Error creating document:", error.messsage);
       return {

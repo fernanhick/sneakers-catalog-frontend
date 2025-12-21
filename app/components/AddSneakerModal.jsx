@@ -11,10 +11,18 @@ const AddSneakerModal = ({
   modalVisible,
   setModalVisible,
   alertMessageVisible,
+  setAlertMessageVisible,
+  alertMessageVisibleSize,
+  setAlertMessageVisibleSize,
   newSneaker,
   submitSneaker,
   handleOnChange,
 }) => {
+  const handleOnCancel = () => {
+    setModalVisible(false);
+    setAlertMessageVisibleSize(false);
+    setAlertMessageVisible(false);
+  };
   return (
     <Modal
       visible={modalVisible}
@@ -46,11 +54,20 @@ const AddSneakerModal = ({
           ) : (
             ""
           )}
+          {alertMessageVisibleSize ? (
+            <Text style={styles.alertMessage}>
+              Please insert a number for Size
+            </Text>
+          ) : (
+            ""
+          )}
 
           <View style={styles.modalButtons}>
             <TouchableOpacity
               style={styles.cancelButton}
-              onPress={() => setModalVisible(false)}
+              onPress={() => {
+                handleOnCancel();
+              }}
             >
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>

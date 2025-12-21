@@ -15,20 +15,23 @@ const sneakerService = {
     return { data: response };
   },
   /* Add new sneaker to DB */
-  async addSneaker(model, size) {
-    if (!model || !size) {
+  async addSneaker(sneaker) {
+    if (!sneaker.model || !sneaker.size) {
       return { error: "Sneaker model or size not included" };
     }
     const data = {
-      model: model,
-      size: size,
-      createdAt: new Date().toISOString,
+      model: sneaker.model || undefined,
+      size: parseFloat(sneaker.size) || undefined,
+      brand: "nike" || undefined,
+      color: "red" || undefined,
+      //createdAt: new Date().toISOString,
     };
+
     const response = await databaseService.createSneaker(
       dbId,
       colId,
-      data,
-      ID.unique()
+      ID.unique(),
+      data
     );
     if (response?.error) {
       return { error: response.error };
