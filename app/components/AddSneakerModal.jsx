@@ -1,10 +1,10 @@
 import {
-    Modal,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Modal,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 const AddSneakerModal = ({
@@ -12,11 +12,17 @@ const AddSneakerModal = ({
   setModalVisible,
   alertMessageVisible,
   setAlertMessageVisible,
+  alertMessageVisibleSize,
+  setAlertMessageVisibleSize,
   newSneaker,
-  setNewSneaker,
-  submitHandler,
+  submitSneaker,
   handleOnChange,
 }) => {
+  const handleOnCancel = () => {
+    setModalVisible(false);
+    setAlertMessageVisibleSize(false);
+    setAlertMessageVisible(false);
+  };
   return (
     <Modal
       visible={modalVisible}
@@ -48,17 +54,26 @@ const AddSneakerModal = ({
           ) : (
             ""
           )}
+          {alertMessageVisibleSize ? (
+            <Text style={styles.alertMessage}>
+              Please insert a number for Size
+            </Text>
+          ) : (
+            ""
+          )}
 
           <View style={styles.modalButtons}>
             <TouchableOpacity
               style={styles.cancelButton}
-              onPress={() => setModalVisible(false)}
+              onPress={() => {
+                handleOnCancel();
+              }}
             >
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.saveButton}
-              onPress={() => submitHandler()}
+              onPress={() => submitSneaker()}
             >
               <Text style={styles.saveButtonText}>Save</Text>
             </TouchableOpacity>

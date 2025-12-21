@@ -9,11 +9,12 @@ const config = {
     sneakers: process.env.EXPO_PUBLIC_APPWRITE_DB_TABLE_ID,
   },
 };
-
+/* Iniate instance for the Client and setup Project ID and Endpoint */
 const client = new Client()
   .setEndpoint(config.endpoint)
   .setProject(config.projectId);
 
+/* Verify OS using react native and switch between OS detected */
 switch (Platform.OS) {
   case "ios":
     client.setPlatform(process.env.EXPO_PUBLIC_APPWRITE_BUNDLE_ID);

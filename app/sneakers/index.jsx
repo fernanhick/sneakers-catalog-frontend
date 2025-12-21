@@ -7,6 +7,7 @@ import SneakersList from "../components/SneakersList";
 const SneakerView = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [alertMessageVisible, setAlertMessageVisible] = useState(false);
+  const [alertMessageVisibleSize, setAlertMessageVisibleSize] = useState(false);
   const [newSneaker, setNewSneaker] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,7 +25,7 @@ const SneakerView = () => {
 
     if (response.error) {
       setError(response.error);
-      Alert.alert("Error:", response.error);
+      Alert.alert(error, response.error);
     } else {
       setSneakers(response.data);
       setError(null);
@@ -36,17 +37,29 @@ const SneakerView = () => {
     setNewSneaker((prevState) => ({ ...prevState, [input]: text }));
     setAlertMessageVisible(false);
   };
-  const submitHandler = () => {
+  const submitSneaker = async () => {
     /* Handle if the model or size are undefined then exit function */
+    newSneaker.size = parseFloat(newSneaker.size);
     if (newSneaker.model === undefined || newSneaker.size === undefined) {
       setAlertMessageVisible(true);
       return;
     }
-    newSneaker.id = sneakers.length + 1;
-    setSneakers([...sneakers, newSneaker]);
+    if (!Number(newSneaker.size)) {
+      setAlertMessageVisibleSize(true);
+      return;
+    }
+    const response = await sneakerService.addSneaker(newSneaker);
+
+    if (response.error) {
+      Alert.alert("Error:", response.error);
+    } else {
+      setSneakers([...sneakers, response.data]);
+    }
+
     setNewSneaker({});
     setModalVisible(false);
     setAlertMessageVisible(false);
+    setAlertMessageVisibleSize(false);
   };
 
   return (
@@ -67,7 +80,9 @@ const SneakerView = () => {
         setNewSneaker={setNewSneaker}
         alertMessageVisible={alertMessageVisible}
         setAlertMessageVisible={setAlertMessageVisible}
-        submitHandler={submitHandler}
+        alertMessageVisibleSize={alertMessageVisibleSize}
+        setAlertMessageVisibleSize={setAlertMessageVisibleSize}
+        submitSneaker={submitSneaker}
         handleOnChange={handleOnChange}
       />
     </View>
