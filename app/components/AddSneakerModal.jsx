@@ -1,20 +1,18 @@
 import {
-    Modal,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Modal,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 const AddSneakerModal = ({
   modalVisible,
   setModalVisible,
   alertMessageVisible,
-  setAlertMessageVisible,
   newSneaker,
-  setNewSneaker,
-  submitHandler,
+  submitSneaker,
   handleOnChange,
 }) => {
   return (
@@ -58,7 +56,7 @@ const AddSneakerModal = ({
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.saveButton}
-              onPress={() => submitHandler()}
+              onPress={() => submitSneaker()}
             >
               <Text style={styles.saveButtonText}>Save</Text>
             </TouchableOpacity>

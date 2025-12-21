@@ -24,7 +24,7 @@ const SneakerView = () => {
 
     if (response.error) {
       setError(response.error);
-      Alert.alert("Error:", response.error);
+      Alert.alert(error, response.error);
     } else {
       setSneakers(response.data);
       setError(null);
@@ -36,14 +36,23 @@ const SneakerView = () => {
     setNewSneaker((prevState) => ({ ...prevState, [input]: text }));
     setAlertMessageVisible(false);
   };
-  const submitHandler = () => {
+  const submitSneaker = async () => {
     /* Handle if the model or size are undefined then exit function */
     if (newSneaker.model === undefined || newSneaker.size === undefined) {
       setAlertMessageVisible(true);
       return;
     }
-    newSneaker.id = sneakers.length + 1;
-    setSneakers([...sneakers, newSneaker]);
+    const response = await sneakerService.addSneaker(
+      newSneaker.model,
+      newSneaker.size
+    );
+
+    if (response.error) {
+      Alert.alert("Error:", response.error);
+    } else {
+      //setSneakers([...sneakers, response.data]);
+    }
+
     setNewSneaker({});
     setModalVisible(false);
     setAlertMessageVisible(false);
@@ -67,7 +76,7 @@ const SneakerView = () => {
         setNewSneaker={setNewSneaker}
         alertMessageVisible={alertMessageVisible}
         setAlertMessageVisible={setAlertMessageVisible}
-        submitHandler={submitHandler}
+        submitSneaker={submitSneaker}
         handleOnChange={handleOnChange}
       />
     </View>
