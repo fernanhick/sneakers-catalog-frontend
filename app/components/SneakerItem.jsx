@@ -1,6 +1,6 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-const SneakerItem = ({ sneaker }) => {
+const SneakerItem = ({ sneaker, onDelete, onEdit }) => {
   return (
     <View style={styles.sneakerItem}>
       <Image style={styles.image} />
@@ -9,6 +9,24 @@ const SneakerItem = ({ sneaker }) => {
           {sneaker.model}
         </Text>
         <Text style={styles.sneakerSize}>size: {sneaker.size}</Text>
+      </View>
+      <View style={styles.itemControllers}>
+        <Pressable
+          style={styles.sneakerEdit}
+          onPress={() => {
+            onEdit(sneaker.$id);
+          }}
+        >
+          <Text style={styles.sneakerEditText}>Edit</Text>
+        </Pressable>
+        <Pressable
+          style={styles.sneakerDelete}
+          onPress={() => {
+            onDelete(sneaker.$id);
+          }}
+        >
+          <Text style={styles.sneakerDeleteText}>Delete</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -43,6 +61,22 @@ const styles = StyleSheet.create({
   sneakerRow: {
     flex: 1,
     flexDirection: "column",
+  },
+  itemControllers: {
+    height: "100%",
+
+    flexDirection: "row",
+    alignSelf: "flex-end",
+  },
+  sneakerDelete: {
+    backgroundColor: "red",
+    width: 50,
+    borderBottomRightRadius: 5,
+    borderTopRightRadius: 5,
+  },
+  sneakerEdit: {
+    backgroundColor: "green",
+    width: 50,
   },
 });
 

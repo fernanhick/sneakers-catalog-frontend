@@ -1,5 +1,12 @@
-import { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import sneakerService from "../../services/sneakerService";
 import AddSneakerModal from "../components/AddSneakerModal";
 import SneakersList from "../components/SneakersList";
@@ -9,9 +16,14 @@ const SneakerView = () => {
   const [alertMessageVisible, setAlertMessageVisible] = useState(false);
   const [alertMessageVisibleSize, setAlertMessageVisibleSize] = useState(false);
   const [newSneaker, setNewSneaker] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [sneakers, setSneakers] = useState([]);
+
+  /* Editing State for Modal */
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedText, setEditedText] = useState({});
+  const inputRef = useRef(null);
 
   /* UseEffect  is used for fetching the initial data from server */
 
@@ -29,12 +41,18 @@ const SneakerView = () => {
     } else {
       setSneakers(response.data);
       setError(null);
+      setLoading(false);
     }
   };
 
   /* Handle changes in the Text input and append into current object to be injected in the sneakers list */
   const handleOnChange = (text, input) => {
     setNewSneaker((prevState) => ({ ...prevState, [input]: text }));
+    setAlertMessageVisible(false);
+  };
+  /* Handles changes to the Text input while editing an Item */
+  const handleOnEdit = (text, input) => {
+    setEditedText((prevState) => ({ ...prevState, [input]: text }));
     setAlertMessageVisible(false);
   };
   const submitSneaker = async () => {
@@ -48,6 +66,7 @@ const SneakerView = () => {
       setAlertMessageVisibleSize(true);
       return;
     }
+
     const response = await sneakerService.addSneaker(newSneaker);
 
     if (response.error) {
@@ -61,10 +80,83 @@ const SneakerView = () => {
     setAlertMessageVisible(false);
     setAlertMessageVisibleSize(false);
   };
+  /* Update Sneaker Items */
+  const submitSneakerEdit = async () => {
+    /* Handle if the model or size are undefined then exit function */
+    editedText.size = parseFloat(editedText.size);
 
+    if (editedText.model === undefined || editedText.size === undefined) {
+      setAlertMessageVisible(true);
+      return;
+    }
+    if (!Number(editedText.size)) {
+      setAlertMessageVisibleSize(true);
+      return;
+    }
+    const response = await sneakerService.updateSneaker(
+      editedText.$id,
+      editedText
+    );
+    if (response.error) {
+      Alert.alert("Error:", response.error);
+    } else {
+      /* Remove the item from Array based on ID */
+      setSneakers(sneakers.filter((sneaker) => sneaker.$id !== editedText.$id));
+      /* Checking Previous State of the Array and adding the updated value of the items removed previously */
+      setSneakers((prevState) => [...prevState, editedText]);
+    }
+    setEditedText({});
+    setModalVisible(false);
+    setAlertMessageVisible(false);
+    setAlertMessageVisibleSize(false);
+    setIsEditing(false);
+  };
+  /* Delete Function */
+  const deleteListItem = async (id) => {
+    /* Display alert for confirming deletion using alert multiple fields */
+    Alert.alert("Delete Sneaker", "Are you sure you want to delete the item", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          const response = await sneakerService.deleteSneaker(id);
+          if (response.error) {
+            Alert.alert("Error", response.error);
+          } else {
+            /* This will delete item on list by filtering out the id if sucessful */
+            setSneakers(sneakers.filter((sneaker) => sneaker.$id !== id));
+          }
+        },
+      },
+    ]);
+  };
+
+  /* Edit Functionality */
+  const editListItem = async (id) => {
+    sneakers.forEach((item) => {
+      if (item.$id === id) {
+        setEditedText(item);
+      }
+    });
+    setIsEditing(true);
+    setModalVisible(true);
+  };
   return (
     <View style={styles.container}>
-      <SneakersList sneakers={sneakers} />
+      {loading ? (
+        <ActivityIndicator size="large" color="#007bff" />
+      ) : (
+        <>
+          {error && <Text style={styles.errorText}>{error}</Text>}
+          <SneakersList
+            sneakers={sneakers}
+            onDelete={deleteListItem}
+            onEdit={editListItem}
+          />
+        </>
+      )}
+
       {/* ADD SNEAKER BUTTON */}
       <TouchableOpacity
         style={styles.button}
@@ -74,6 +166,11 @@ const SneakerView = () => {
       </TouchableOpacity>
       {/* MODAL */}
       <AddSneakerModal
+        /* Editing section */
+        isEditing={isEditing}
+        setIsEditing={setIsEditing}
+        editedText={editedText}
+        /* Modal visibility */
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         newSneaker={newSneaker}
@@ -84,6 +181,8 @@ const SneakerView = () => {
         setAlertMessageVisibleSize={setAlertMessageVisibleSize}
         submitSneaker={submitSneaker}
         handleOnChange={handleOnChange}
+        handleOnEdit={handleOnEdit}
+        submitSneakerEdit={submitSneakerEdit}
       />
     </View>
   );
@@ -110,7 +209,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#fff",
   },
-  /* MODAL STYLES */
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginBottom: 15,
+    fontSize: 16,
+  },
 });
 
 export default SneakerView;

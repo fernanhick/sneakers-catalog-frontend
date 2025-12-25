@@ -17,12 +17,22 @@ const AddSneakerModal = ({
   newSneaker,
   submitSneaker,
   handleOnChange,
+  /* EDIT Section props */
+  isEditing,
+  setIsEditing,
+  editedText,
+  handleOnEdit,
+  submitSneakerEdit,
 }) => {
   const handleOnCancel = () => {
     setModalVisible(false);
     setAlertMessageVisibleSize(false);
     setAlertMessageVisible(false);
+    setIsEditing(false);
   };
+
+  /*   const editValues = { ...editedText };
+   */
   return (
     <Modal
       visible={modalVisible}
@@ -32,20 +42,45 @@ const AddSneakerModal = ({
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Add a New Sneaker</Text>
+          {isEditing ? (
+            <Text style={styles.modalTitle}>Edit Sneaker</Text>
+          ) : (
+            <Text style={styles.modalTitle}>Add a New Sneaker</Text>
+          )}
           <TextInput
             style={styles.textInputModel}
             placeholder="Enter Model"
+            editable
             placeholderTextColor={"#aaa"}
-            value={newSneaker}
-            onChangeText={(e) => handleOnChange(e, "model")}
+            value={isEditing ? editedText.model : newSneaker}
+            onChangeText={
+              isEditing
+                ? (e) => handleOnEdit(e, "model")
+                : (e) => handleOnChange(e, "model")
+            }
+          />
+          <TextInput
+            style={styles.textInputModel}
+            placeholder="Enter Brand"
+            editable
+            placeholderTextColor={"#aaa"}
+            value={isEditing ? editedText.brand : newSneaker}
+            onChangeText={
+              isEditing
+                ? (e) => handleOnEdit(e, "brand")
+                : (e) => handleOnChange(e, "brand")
+            }
           />
           <TextInput
             style={styles.textInputSize}
             placeholder="Enter Size"
             placeholderTextColor={"#aaa"}
-            value={newSneaker}
-            onChangeText={(e) => handleOnChange(e, "size")}
+            value={isEditing ? String(editedText.size) : newSneaker}
+            onChangeText={
+              isEditing
+                ? (e) => handleOnEdit(e, "size")
+                : (e) => handleOnChange(e, "size")
+            }
           />
           {alertMessageVisible ? (
             <Text style={styles.alertMessage}>
@@ -71,12 +106,21 @@ const AddSneakerModal = ({
             >
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.saveButton}
-              onPress={() => submitSneaker()}
-            >
-              <Text style={styles.saveButtonText}>Save</Text>
-            </TouchableOpacity>
+            {isEditing ? (
+              <TouchableOpacity
+                style={styles.saveButton}
+                onPress={() => submitSneakerEdit()}
+              >
+                <Text style={styles.saveButtonText}>Save Editing</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.saveButton}
+                onPress={() => submitSneaker()}
+              >
+                <Text style={styles.saveButtonText}>Save</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </View>

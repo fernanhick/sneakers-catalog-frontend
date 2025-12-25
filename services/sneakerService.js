@@ -22,7 +22,7 @@ const sneakerService = {
     const data = {
       model: sneaker.model || undefined,
       size: parseFloat(sneaker.size) || undefined,
-      brand: "nike" || undefined,
+      brand: sneaker.brand || undefined,
       color: "red" || undefined,
       //createdAt: new Date().toISOString,
     };
@@ -38,6 +38,31 @@ const sneakerService = {
     }
 
     return { data: response };
+  },
+  /* Delete Sneaker from Database using ID */
+  async deleteSneaker(id) {
+    const response = await databaseService.deleteSneakerDB(dbId, colId, id);
+    if (response?.error) {
+      return { error: response.error };
+    }
+
+    return { success: true };
+  },
+  /* Update Item in Database */
+  async updateSneaker(id, sneaker) {
+    const response = await databaseService.updateSneakerDB(
+      dbId,
+      colId,
+      id,
+      sneaker
+    );
+
+    {
+      if (response?.error) {
+        return { error: response.error };
+      }
+      return { data: response };
+    }
   },
 };
 
