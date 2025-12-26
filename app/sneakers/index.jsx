@@ -47,14 +47,19 @@ const SneakerView = () => {
 
   /* Handle changes in the Text input and append into current object to be injected in the sneakers list */
   const handleOnChange = (text, input) => {
-    setNewSneaker((prevState) => ({ ...prevState, [input]: text }));
+    if (!isEditing) {
+      setNewSneaker((prevState) => ({ ...prevState, [input]: text }));
+    } else {
+      setEditedText((prevState) => ({ ...prevState, [input]: text }));
+    }
+
     setAlertMessageVisible(false);
   };
   /* Handles changes to the Text input while editing an Item */
-  const handleOnEdit = (text, input) => {
+  /*   const handleOnEdit = (text, input) => {
     setEditedText((prevState) => ({ ...prevState, [input]: text }));
     setAlertMessageVisible(false);
-  };
+  }; */
   const submitSneaker = async () => {
     /* Handle if the model or size are undefined then exit function */
     newSneaker.size = parseFloat(newSneaker.size);
@@ -181,7 +186,6 @@ const SneakerView = () => {
         setAlertMessageVisibleSize={setAlertMessageVisibleSize}
         submitSneaker={submitSneaker}
         handleOnChange={handleOnChange}
-        handleOnEdit={handleOnEdit}
         submitSneakerEdit={submitSneakerEdit}
       />
     </View>
