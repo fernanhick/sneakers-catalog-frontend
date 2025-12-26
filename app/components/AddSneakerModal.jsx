@@ -21,7 +21,6 @@ const AddSneakerModal = ({
   isEditing,
   setIsEditing,
   editedText,
-  handleOnEdit,
   submitSneakerEdit,
 }) => {
   const handleOnCancel = () => {
@@ -42,45 +41,36 @@ const AddSneakerModal = ({
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          {isEditing ? (
-            <Text style={styles.modalTitle}>Edit Sneaker</Text>
-          ) : (
-            <Text style={styles.modalTitle}>Add a New Sneaker</Text>
-          )}
+          <Text style={styles.modalTitle}>
+            {isEditing ? "Edit Sneaker" : "Add Sneaker"}
+          </Text>
           <TextInput
             style={styles.textInputModel}
             placeholder="Enter Model"
-            editable
             placeholderTextColor={"#aaa"}
             value={isEditing ? editedText.model : newSneaker}
-            onChangeText={
-              isEditing
-                ? (e) => handleOnEdit(e, "model")
-                : (e) => handleOnChange(e, "model")
-            }
+            onChangeText={(e) => handleOnChange(e, "model")}
           />
           <TextInput
             style={styles.textInputModel}
             placeholder="Enter Brand"
-            editable
             placeholderTextColor={"#aaa"}
             value={isEditing ? editedText.brand : newSneaker}
-            onChangeText={
-              isEditing
-                ? (e) => handleOnEdit(e, "brand")
-                : (e) => handleOnChange(e, "brand")
-            }
+            onChangeText={(e) => handleOnChange(e, "brand")}
+          />
+          <TextInput
+            style={styles.textInputModel}
+            placeholder="Enter Color"
+            placeholderTextColor={"#aaa"}
+            value={isEditing ? editedText.color : newSneaker}
+            onChange={(e) => handleOnChange(e, "color")}
           />
           <TextInput
             style={styles.textInputSize}
             placeholder="Enter Size"
             placeholderTextColor={"#aaa"}
             value={isEditing ? String(editedText.size) : newSneaker}
-            onChangeText={
-              isEditing
-                ? (e) => handleOnEdit(e, "size")
-                : (e) => handleOnChange(e, "size")
-            }
+            onChangeText={(e) => handleOnChange(e, "size")}
           />
           {alertMessageVisible ? (
             <Text style={styles.alertMessage}>
