@@ -18,6 +18,14 @@ const HomeScreen = () => {
       >
         <Text style={styles.buttonText}>Get Started</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          router.push("/auth");
+        }}
+      >
+        <Text style={styles.buttonText}>Login section</Text>
+      </TouchableOpacity>
     </View>
   );
 };

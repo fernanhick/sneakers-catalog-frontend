@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-const SneakerLayout = () => {
+const AuthLayout = () => {
   return (
     <Stack
       /* Remove the subheader in the page */
@@ -11,4 +11,4 @@ const SneakerLayout = () => {
   );
 };
 
-export default SneakerLayout;
+export default AuthLayout;
