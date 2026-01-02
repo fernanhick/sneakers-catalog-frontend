@@ -19,10 +19,11 @@ const authService = {
   // Login a User
   async login(email, password) {
     try {
-      const response = await account.createEmailPasswordSession(
+      const response = await account.createEmailPasswordSession({
         email,
-        password
-      );
+        password,
+      });
+      console.log("Login response:", response);
       return response;
     } catch (error) {
       return {
@@ -33,9 +34,9 @@ const authService = {
   // Get User info
   async getUser() {
     try {
-      const response = await account.getUser();
-      return response;
+      return await account.get();
     } catch (error) {
+      console.log("Error getting user:", error);
       return null;
     }
   },

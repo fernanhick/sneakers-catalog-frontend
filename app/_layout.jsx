@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 import { AuthProvider } from "../contexts/AuthContexts";
+import LogoutButton from "./components/LogoutButton";
 const RootLayout = () => {
   return (
     <AuthProvider>
@@ -19,16 +20,18 @@ const RootLayout = () => {
             backgroundColor: "#000",
           },
           headerTitleAlign: "center",
+          headerRight: () => <LogoutButton />,
         }}
       >
         {/*     Assign header titles for each of the pages added to the Stack */}
-        <Stack.Screen name="index" options={{ title: "Home" }} />
+        <Stack.Screen name="index" options={{ headerTitle: "Home" }} />
         <Stack.Screen
           name="sneakers"
           options={{
             headerTitle: "Catalogue",
           }}
         />
+        <Stack.Screen name="auth" options={{ headerTitle: "Login" }} />
       </Stack>
     </AuthProvider>
   );

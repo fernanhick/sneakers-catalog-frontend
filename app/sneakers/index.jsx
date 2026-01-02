@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -7,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useAuth } from "../../contexts/AuthContexts";
 import sneakerService from "../../services/sneakerService";
 import AddSneakerModal from "../components/AddSneakerModal";
 import SneakersList from "../components/SneakersList";
@@ -20,16 +22,27 @@ const SneakerView = () => {
   const [error, setError] = useState(null);
   const [sneakers, setSneakers] = useState([]);
 
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+
   /* Editing State for Modal */
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState({});
   const inputRef = useRef(null);
 
-  /* UseEffect  is used for fetching the initial data from server */
-
   useEffect(() => {
-    fetchSneakers();
-  }, []);
+    if (!authLoading && !user) {
+      router.replace("/auth");
+    }
+  }, [user, authLoading]);
+
+  /* UseEffect  is used for fetching the initial data from server */
+  useEffect(() => {
+    if (user) {
+      console.log("Fetching sneakers for user:", user);
+      fetchSneakers();
+    }
+  }, [user]);
 
   const fetchSneakers = async () => {
     setLoading(true);
@@ -195,6 +208,7 @@ const SneakerView = () => {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
+    height: "100%",
     padding: 20,
     paddingBottom: 100,
     backgroundColor: "#000",

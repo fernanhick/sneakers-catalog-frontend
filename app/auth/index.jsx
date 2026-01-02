@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
   Alert,
@@ -9,13 +10,14 @@ import {
 } from "react-native";
 import { useAuth } from "../../contexts/AuthContexts";
 
-export default function AuthScreen() {
+const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login, register, checkUser } = useAuth();
+  const { login, register } = useAuth();
+  const router = useRouter();
 
   const handleAuth = async () => {
     if (!email || !password) {
@@ -31,11 +33,12 @@ export default function AuthScreen() {
     setLoading(true);
     try {
       if (isLogin) {
-        await login(email, password);
-        const userDetails = await checkUser();
-        console.log(userDetails);
+        const response = await login(email, password);
+        console.log("User Details (Auth Index):", response);
+        router.replace("/sneakers");
       } else {
-        await register(email, password);
+        const response = await register(email, password);
+        console.log("User Details Registering (Auth Index):", response);
       }
     } catch (error) {
       Alert.alert("Error", error.message);
@@ -98,28 +101,31 @@ export default function AuthScreen() {
       </TouchableOpacity>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    padding: 20,
-    backgroundColor: "#fff",
+    padding: 15,
+    backgroundColor: "#000000ff",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+    color: "#fff",
   },
   input: {
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 8,
-    padding: 12,
-    marginBottom: 15,
+    padding: 14,
+    marginBottom: 7,
     fontSize: 16,
+    backgroundColor: "#1c1c1cff",
+    color: "#fff",
   },
   button: {
     backgroundColor: "#007AFF",
@@ -140,3 +146,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
+export default AuthScreen;

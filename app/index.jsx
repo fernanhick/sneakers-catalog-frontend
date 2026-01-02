@@ -1,9 +1,33 @@
 //Import Stylesheet for tyling the components
 import PostImage from "@/assets/images/AppIcons/playstore.png";
-import { router } from "expo-router";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
+import { useRouter } from "expo-router";
+import { useEffect } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useAuth } from "../contexts/AuthContexts";
 const HomeScreen = () => {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace("/sneakers");
+    }
+  }, [user, authLoading]);
+
+  if (authLoading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#ff6600ff" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to SneakerHood</Text>
@@ -17,14 +41,6 @@ const HomeScreen = () => {
         }}
       >
         <Text style={styles.buttonText}>Get Started</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          router.push("/auth");
-        }}
-      >
-        <Text style={styles.buttonText}>Login section</Text>
       </TouchableOpacity>
     </View>
   );

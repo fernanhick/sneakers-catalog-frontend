@@ -14,9 +14,9 @@ export const AuthProvider = ({ children }) => {
 
   const checkUser = async () => {
     setIsLoading(true);
-    const response = authService.getUser();
+    const response = await authService.getUser();
 
-    if (Response?.error) {
+    if (response?.error) {
       setUser(null);
     } else {
       setUser(response);

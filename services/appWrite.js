@@ -23,6 +23,8 @@ switch (Platform.OS) {
     client.setPlatform(process.env.EXPO_PUBLIC_APPWRITE_PACKAGE_NAME);
 }
 
+
 const database = new Databases(client);
 const account = new Account(client);
 export { account, client, config, database };
+
