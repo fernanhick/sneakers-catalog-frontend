@@ -30,8 +30,6 @@ const AddSneakerModal = ({
     setIsEditing(false);
   };
 
-  /*   const editValues = { ...editedText };
-   */
   return (
     <Modal
       visible={modalVisible}

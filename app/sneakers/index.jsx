@@ -32,6 +32,7 @@ const SneakerView = () => {
 
   useEffect(() => {
     if (!authLoading && !user) {
+      console.log("User not authenticated, redirecting to /auth");
       router.replace("/auth");
     }
   }, [user, authLoading]);
@@ -40,18 +41,19 @@ const SneakerView = () => {
   useEffect(() => {
     if (user) {
       console.log("Fetching sneakers for user:", user);
-      fetchSneakers();
+      fetchSneakersUser();
     }
   }, [user]);
 
-  const fetchSneakers = async () => {
+  const fetchSneakersUser = async () => {
     setLoading(true);
-    const response = await sneakerService.getSneakers();
+    const response = await sneakerService.getSneakersByUser(user.$id);
 
     if (response.error) {
       setError(response.error);
-      Alert.alert(error, response.error);
+      //Alert.alert(error, response.error);
     } else {
+      console.log("Fetched sneakers:", response.data);
       setSneakers(response.data);
       setError(null);
       setLoading(false);
@@ -68,14 +70,11 @@ const SneakerView = () => {
 
     setAlertMessageVisible(false);
   };
-  /* Handles changes to the Text input while editing an Item */
-  /*   const handleOnEdit = (text, input) => {
-    setEditedText((prevState) => ({ ...prevState, [input]: text }));
-    setAlertMessageVisible(false);
-  }; */
+  /* Submit New Sneaker Function */
   const submitSneaker = async () => {
     /* Handle if the model or size are undefined then exit function */
     newSneaker.size = parseFloat(newSneaker.size);
+
     if (newSneaker.model === undefined || newSneaker.size === undefined) {
       setAlertMessageVisible(true);
       return;
@@ -85,7 +84,7 @@ const SneakerView = () => {
       return;
     }
 
-    const response = await sneakerService.addSneaker(newSneaker);
+    const response = await sneakerService.addSneaker(user.$id, newSneaker);
 
     if (response.error) {
       Alert.alert("Error:", response.error);
@@ -167,11 +166,24 @@ const SneakerView = () => {
       ) : (
         <>
           {error && <Text style={styles.errorText}>{error}</Text>}
-          <SneakersList
-            sneakers={sneakers}
-            onDelete={deleteListItem}
-            onEdit={editListItem}
-          />
+          {!sneakers.length ? (
+            <Text
+              style={{
+                color: "#fff",
+                textAlign: "center",
+                marginTop: 20,
+                marginBottom: 20,
+              }}
+            >
+              No sneakers found. Add your first sneaker!
+            </Text>
+          ) : (
+            <SneakersList
+              sneakers={sneakers}
+              onDelete={deleteListItem}
+              onEdit={editListItem}
+            />
+          )}
         </>
       )}
 
