@@ -14,8 +14,21 @@ const sneakerService = {
     }
     return { data: response };
   },
+
+  async getSneakersByUser(userId) {
+    const response = await databaseService.listSneakersByUser(
+      dbId,
+      colId,
+      userId
+    );
+    if (response.error) {
+      return { error: response.error };
+    }
+    return { data: response };
+  },
+
   /* Add new sneaker to DB */
-  async addSneaker(sneaker) {
+  async addSneaker(userId, sneaker) {
     if (!sneaker.model || !sneaker.size) {
       return { error: "Sneaker model or size not included" };
     }
@@ -24,7 +37,7 @@ const sneakerService = {
       size: parseFloat(sneaker.size) || undefined,
       brand: sneaker.brand || undefined,
       color: "red" || undefined,
-      //createdAt: new Date().toISOString,
+      user_id: userId || undefined,
     };
 
     const response = await databaseService.createSneaker(

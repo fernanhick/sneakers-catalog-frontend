@@ -1,3 +1,4 @@
+import { Query } from "react-native-appwrite";
 import { database } from "./appWrite";
 
 const databaseService = {
@@ -7,6 +8,19 @@ const databaseService = {
   async listSneakers(dbId, colId) {
     try {
       const response = await database.listDocuments(dbId, colId);
+      return response.documents || [];
+    } catch (error) {
+      console.error("Error fetching documents:", error.messsage);
+      return { error: error.messsage };
+    }
+  },
+
+  async listSneakersByUser(dbId, colId, userId) {
+    try {
+      console.log("Listing sneakers for user ID:", userId);
+      const response = await database.listDocuments(dbId, colId, [
+        Query.equal("user_id", [userId]),
+      ]);
       return response.documents || [];
     } catch (error) {
       console.error("Error fetching documents:", error.messsage);
