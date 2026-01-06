@@ -1,3 +1,7 @@
+import { useAuth } from "@/contexts/AuthContexts";
+import sneakerService from "@/services/sneakerService";
+import AddSneakerModal from "@/src/components/AddSneakerModal";
+import SneakersList from "@/src/components/SneakersList";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -8,10 +12,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useAuth } from "../../contexts/AuthContexts";
-import sneakerService from "../../services/sneakerService";
-import AddSneakerModal from "../components/AddSneakerModal";
-import SneakersList from "../components/SneakersList";
 
 const SneakerView = () => {
   const [modalVisible, setModalVisible] = useState(false);

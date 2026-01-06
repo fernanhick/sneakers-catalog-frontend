@@ -1,6 +1,6 @@
+import { AuthProvider } from "@/contexts/AuthContexts";
 import { Stack } from "expo-router";
-import { AuthProvider } from "../contexts/AuthContexts";
-import LogoutButton from "./components/LogoutButton";
+import LogoutButton from "../components/LogoutButton";
 const RootLayout = () => {
   return (
     <AuthProvider>
