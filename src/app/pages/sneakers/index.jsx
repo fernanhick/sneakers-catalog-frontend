@@ -1,9 +1,7 @@
 import AddSneakerModal from "@/src/components/AddSneakerModal";
 import SneakersList from "@/src/components/SneakersList";
-import { useAuth } from "@src/contexts/AuthContexts";
-import sneakerService from "@src/services/sneakerService";
-import { useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -12,6 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useAuth } from "../../../contexts/AuthContexts";
+import sneakerService from "../../../services/sneakerService";
 
 const SneakerView = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -30,12 +30,14 @@ const SneakerView = () => {
   const [editedText, setEditedText] = useState({});
   const inputRef = useRef(null);
 
-  useEffect(() => {
-    if (!authLoading && !user) {
-      console.log("User not authenticated, redirecting to /auth");
-      router.replace("/auth");
-    }
-  }, [user, authLoading]);
+  useFocusEffect(
+    useCallback(() => {
+      if (!authLoading || !user) {
+        console.log("User not authenticated, redirecting to /auth");
+        router.replace("pages/auth");
+      }
+    }, [user, authLoading])
+  );
 
   /* UseEffect  is used for fetching the initial data from server */
   useEffect(() => {

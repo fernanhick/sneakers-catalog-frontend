@@ -16,7 +16,7 @@ const HomeScreen = () => {
   const { user, loading: authLoading } = useAuth();
   useEffect(() => {
     if (!authLoading && user) {
-      router.replace("/pages/sneakers");
+      router.push("/pages/sneakers");
     }
   }, [user, authLoading]);
 
