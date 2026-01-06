@@ -1,4 +1,3 @@
-import { useAuth } from "@/contexts/AuthContexts";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
@@ -9,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useAuth } from "../../../contexts/AuthContexts";
 
 const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(true);

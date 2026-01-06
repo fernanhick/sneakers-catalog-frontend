@@ -1,6 +1,5 @@
 //Import Stylesheet for tyling the components
 import PostImage from "@/assets/images/AppIcons/playstore.png";
-import { useAuth } from "@/contexts/AuthContexts";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import {
@@ -11,12 +10,13 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useAuth } from "../contexts/AuthContexts";
 const HomeScreen = () => {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   useEffect(() => {
     if (!authLoading && user) {
-      router.replace("/sneakers");
+      router.replace("/pages/sneakers");
     }
   }, [user, authLoading]);
 
@@ -37,7 +37,7 @@ const HomeScreen = () => {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          router.push("/sneakers");
+          router.push("/pages/sneakers");
         }}
       >
         <Text style={styles.buttonText}>Get Started</Text>

@@ -1,38 +1,49 @@
-import { AuthProvider } from "@/contexts/AuthContexts";
-import { Stack } from "expo-router";
+import { Drawer } from "expo-router/drawer";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LogoutButton from "../components/LogoutButton";
+import { AuthProvider } from "../contexts/AuthContexts";
+
 const RootLayout = () => {
   return (
     <AuthProvider>
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: "#ff8c00",
-          },
-          headerTintColor: "#fff",
-          headerTitleStyle: {
-            fontSize: 25,
-            fontWeight: "bold",
-          },
-          contentStyle: {
-            paddingHorizontal: 20,
-            paddingTop: 20,
-            backgroundColor: "#000",
-          },
-          headerTitleAlign: "center",
-          headerRight: () => <LogoutButton />,
-        }}
-      >
-        {/*     Assign header titles for each of the pages added to the Stack */}
-        <Stack.Screen name="index" options={{ headerTitle: "Home" }} />
-        <Stack.Screen
-          name="sneakers"
-          options={{
-            headerTitle: "Catalogue",
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Drawer
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: "#ff8c00",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontSize: 25,
+              fontWeight: "bold",
+            },
+            contentStyle: {
+              paddingHorizontal: 20,
+              paddingTop: 20,
+              backgroundColor: "#000",
+            },
+            headerTitleAlign: "center",
+            headerRight: () => <LogoutButton />,
           }}
-        />
-        <Stack.Screen name="auth" options={{ headerTitle: "Login" }} />
-      </Stack>
+        >
+          {/*     Assign header titles for each of the pages added to the Stack */}
+          <Drawer.Screen
+            name="index"
+            options={{ headerTitle: "Home", drawerLabel: "Home" }}
+          />
+          <Drawer.Screen
+            name="pages/sneakers"
+            options={{
+              headerTitle: "sneakers",
+              drawerLabel: "Sneakers",
+            }}
+          />
+          <Drawer.Screen
+            name="pages/auth"
+            options={{ headerTitle: "Login", drawerLabel: "Login" }}
+          />
+        </Drawer>
+      </GestureHandlerRootView>
     </AuthProvider>
   );
 };

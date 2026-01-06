@@ -1,6 +1,6 @@
-import { useAuth } from "@/contexts/AuthContexts";
 import { router } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { useAuth } from "../contexts/AuthContexts";
 
 const LogoutButton = () => {
   const { user, logout } = useAuth();
@@ -9,7 +9,7 @@ const LogoutButton = () => {
 
   const handleLogout = async () => {
     await logout();
-    router.push("/auth");
+    router.push("/pages/auth");
   };
 
   return (

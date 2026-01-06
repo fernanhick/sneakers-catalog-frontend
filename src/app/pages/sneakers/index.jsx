@@ -1,7 +1,7 @@
-import { useAuth } from "@/contexts/AuthContexts";
-import sneakerService from "@/services/sneakerService";
 import AddSneakerModal from "@/src/components/AddSneakerModal";
 import SneakersList from "@/src/components/SneakersList";
+import { useAuth } from "@src/contexts/AuthContexts";
+import sneakerService from "@src/services/sneakerService";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
