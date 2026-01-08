@@ -1,5 +1,5 @@
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
 import {
   Alert,
   StyleSheet,
@@ -16,8 +16,17 @@ const AuthScreen = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login, register } = useAuth();
+  const { login, register, user, authLoading = loading } = useAuth();
   const router = useRouter();
+
+  useFocusEffect(
+    useCallback(() => {
+      if (user && !authLoading) {
+        console.log("User not authenticated, redirecting to /auth");
+        router.replace("pages/sneakers");
+      }
+    }, [user, authLoading, router])
+  );
 
   const handleAuth = async () => {
     if (!email || !password) {
@@ -34,11 +43,11 @@ const AuthScreen = () => {
     try {
       if (isLogin) {
         const response = await login(email, password);
-        console.log("User Details (Auth Index):", response);
-        router.replace("/sneakers");
+        //console.log("User Details (Auth Index):", response);
+        router.replace("pages/sneakers");
       } else {
         const response = await register(email, password);
-        console.log("User Details Registering (Auth Index):", response);
+        //console.log("User Details Registering (Auth Index):", response);
       }
     } catch (error) {
       Alert.alert("Error", error.message);
@@ -107,7 +116,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    padding: 15,
+    padding: 35,
     backgroundColor: "#000000ff",
   },
   title: {

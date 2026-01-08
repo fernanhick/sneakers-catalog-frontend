@@ -1,5 +1,5 @@
 import { Query } from "react-native-appwrite";
-import { database } from "./appWrite";
+import { database, storage } from "./appWrite";
 
 const databaseService = {
   /* Define all the CRUD options */
@@ -17,7 +17,6 @@ const databaseService = {
 
   async listSneakersByUser(dbId, colId, userId) {
     try {
-      console.log("Listing sneakers for user ID:", userId);
       const response = await database.listDocuments(dbId, colId, [
         Query.equal("user_id", [userId]),
       ]);
@@ -27,16 +26,44 @@ const databaseService = {
       return { error: error.messsage };
     }
   },
-
+  async getImageFromDatabase(bucketId, fileId) {
+    try {
+      const response = await storage.getFileView(bucketId, fileId);
+      //console.log("Image fetched successfully:", response);
+      return response;
+    } catch (error) {
+      console.error("Error fetching image:", error.message);
+      return { error: error.message };
+    }
+  },
+  /* Upload Image to Bucket */
+  async uploadImageToBucket(bucketId, fileId, file) {
+    console.log("Uploading image file DBServ:", file);
+    try {
+      const data = {
+        name: file.fileName,
+        type: file.mimeType,
+        size: file.fileSize,
+        uri: file.uri,
+      };
+      console.log("File data prepared for upload:", data);
+      const response = await storage.createFile(bucketId, fileId, data);
+      return response;
+    } catch (error) {
+      console.error("Error uploading file:", error.message);
+      return { error: error.message };
+    }
+  },
   /* Created Sneakers Item in DB*/
-  /*  */
-  async createSneaker(dbId, colId, id = null, data) {
+
+  async createSneaker(dbId, colId, id = null, sneakerData) {
+    //console.log("Creating sneaker with data:", sneakerData);
     try {
       return await database.createDocument(
         dbId,
         colId,
         id || undefined,
-        data || undefined
+        sneakerData || undefined
       );
     } catch (error) {
       console.error("Error creating document:", error.messsage);

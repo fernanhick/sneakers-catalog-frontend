@@ -1,5 +1,6 @@
 import AddSneakerModal from "@/src/components/AddSneakerModal";
 import SneakersList from "@/src/components/SneakersList";
+import * as ImagePicker from "expo-image-picker";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -28,34 +29,36 @@ const SneakerView = () => {
   /* Editing State for Modal */
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState({});
+  const [image, setImage] = useState(null);
+  const [imageAsset, setImageAsset] = useState(null);
   const inputRef = useRef(null);
 
   useFocusEffect(
     useCallback(() => {
-      if (!authLoading || !user) {
+      if (!user && !authLoading) {
         console.log("User not authenticated, redirecting to /auth");
-        router.replace("pages/auth");
+        router.replace("/pages/auth");
       }
-    }, [user, authLoading])
+    }, [user, authLoading, router])
   );
 
   /* UseEffect  is used for fetching the initial data from server */
   useEffect(() => {
     if (user) {
-      console.log("Fetching sneakers for user:", user);
+      //console.log("Fetching sneakers for user:", user);
       fetchSneakersUser();
     }
   }, [user]);
 
   const fetchSneakersUser = async () => {
     setLoading(true);
-    const response = await sneakerService.getSneakersByUser(user.$id);
+    const response = await sneakerService.getSneakerWithImage(user.$id);
 
     if (response.error) {
       setError(response.error);
       //Alert.alert(error, response.error);
     } else {
-      console.log("Fetched sneakers:", response.data);
+      //console.log("Fetched sneakers:", response.data);
       setSneakers(response.data);
       setError(null);
       setLoading(false);
@@ -74,26 +77,25 @@ const SneakerView = () => {
   };
   /* Submit New Sneaker Function */
   const submitSneaker = async () => {
-    /* Handle if the model or size are undefined then exit function */
     newSneaker.size = parseFloat(newSneaker.size);
-
-    if (newSneaker.model === undefined || newSneaker.size === undefined) {
+    const validation = validateSneaker(newSneaker);
+    if (!validation.isValid) {
       setAlertMessageVisible(true);
       return;
     }
-    if (!Number(newSneaker.size)) {
-      setAlertMessageVisibleSize(true);
-      return;
-    }
 
-    const response = await sneakerService.addSneaker(user.$id, newSneaker);
+    const response = await sneakerService.addSneakerWithImage(
+      user.$id,
+      newSneaker,
+      imageAsset
+    );
 
-    if (response.error) {
+    if (response?.error) {
       Alert.alert("Error:", response.error);
     } else {
       setSneakers([...sneakers, response.data]);
     }
-
+    setImage(null);
     setNewSneaker({});
     setModalVisible(false);
     setAlertMessageVisible(false);
@@ -101,29 +103,30 @@ const SneakerView = () => {
   };
   /* Update Sneaker Items */
   const submitSneakerEdit = async () => {
-    /* Handle if the model or size are undefined then exit function */
     editedText.size = parseFloat(editedText.size);
 
-    if (editedText.model === undefined || editedText.size === undefined) {
+    const validation = validateSneaker(editedText);
+    if (!validation.isValid) {
       setAlertMessageVisible(true);
       return;
     }
-    if (!Number(editedText.size)) {
-      setAlertMessageVisibleSize(true);
-      return;
-    }
+
     const response = await sneakerService.updateSneaker(
       editedText.$id,
       editedText
     );
+
     if (response.error) {
       Alert.alert("Error:", response.error);
     } else {
-      /* Remove the item from Array based on ID */
-      setSneakers(sneakers.filter((sneaker) => sneaker.$id !== editedText.$id));
-      /* Checking Previous State of the Array and adding the updated value of the items removed previously */
-      setSneakers((prevState) => [...prevState, editedText]);
+      // More efficient update approach
+      setSneakers(
+        sneakers.map((sneaker) =>
+          sneaker.$id === editedText.$id ? editedText : sneaker
+        )
+      );
     }
+
     setEditedText({});
     setModalVisible(false);
     setAlertMessageVisible(false);
@@ -161,6 +164,39 @@ const SneakerView = () => {
     setIsEditing(true);
     setModalVisible(true);
   };
+
+  // Extract validation function
+  const validateSneaker = (sneakerData) => {
+    if (sneakerData.model === undefined || sneakerData.size === undefined) {
+      return { isValid: false, message: "Model and size are required" };
+    }
+    if (!Number(sneakerData.size)) {
+      return { isValid: false, message: "Size must be a valid number" };
+    }
+    return { isValid: true };
+  };
+
+  /* Camera Section */
+  const uploadImage = async () => {
+    // Image upload logic here
+    try {
+      await ImagePicker.requestCameraPermissionsAsync();
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+      if (!result.canceled) {
+        console.log("Image picked:", result);
+        setImageAsset(result.assets[0]);
+        setImage(result.assets[0].uri);
+        console.log("Image URI:", result.assets[0].uri);
+      }
+    } catch (error) {
+      console.log("Error uploading image:", error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       {loading ? (
@@ -214,6 +250,9 @@ const SneakerView = () => {
         submitSneaker={submitSneaker}
         handleOnChange={handleOnChange}
         submitSneakerEdit={submitSneakerEdit}
+        /* Camera props*/
+        uploadImage={uploadImage}
+        image={image}
       />
     </View>
   );
