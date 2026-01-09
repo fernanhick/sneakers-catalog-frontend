@@ -51,3 +51,5 @@ To run this project locally, follow these steps:
 ## License
 
 This project is private and proprietary.
+
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/fernanhick/sneakers-catalog-frontend?utm_source=oss&utm_medium=github&utm_campaign=fernanhick%2Fsneakers-catalog-frontend&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
