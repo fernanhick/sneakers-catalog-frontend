@@ -38,7 +38,7 @@ const databaseService = {
   },
   /* Upload Image to Bucket */
   async uploadImageToBucket(bucketId, fileId, file) {
-    console.log("Uploading image file DBServ:", file);
+    //console.log("Uploading image file DBServ:", file);
     try {
       const data = {
         name: file.fileName,
@@ -46,8 +46,9 @@ const databaseService = {
         size: file.fileSize,
         uri: file.uri,
       };
-      console.log("File data prepared for upload:", data);
+      //console.log("File data prepared for upload:", data);
       const response = await storage.createFile(bucketId, fileId, data);
+      //console.log("File uploaded successfully:", response);
       return response;
     } catch (error) {
       console.error("Error uploading file:", error.message);

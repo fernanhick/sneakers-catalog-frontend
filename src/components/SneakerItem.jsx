@@ -3,9 +3,9 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 const SneakerItem = ({ sneaker, onDelete, onEdit }) => {
   return (
     <View style={styles.sneakerItem}>
-      {sneaker.uri ? (
+      {sneaker.image_uri ? (
         <Image
-          source={{ uri: sneaker.uri }}
+          source={{ uri: sneaker.image_uri }}
           style={styles.image}
           resizeMode="cover"
         />

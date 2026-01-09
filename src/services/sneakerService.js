@@ -5,6 +5,8 @@ import databaseService from "./databaseService";
 const dbId = process.env.EXPO_PUBLIC_APPWRITE_DB_ID;
 const colId = process.env.EXPO_PUBLIC_APPWRITE_DB_TABLE_ID;
 const bucketId = process.env.EXPO_PUBLIC_APPWRITE_STORAGE_BUCKET_ID;
+const endpoint = process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT.replace(/\/$/, "");
+const projectId = process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID;
 
 const sneakerService = {
   /* Get Sneakers List */
@@ -27,7 +29,7 @@ const sneakerService = {
           sneaker.image_id
         );
         if (!imageResponse.error) {
-          console.log("Image URL for sneaker:", imageResponse.data);
+          //console.log("Image URL for sneaker:", imageResponse.data);
           sneaker.uri = imageResponse.data; // Assuming the response has a 'href' property for the image URL
         } else {
           console.error(
@@ -37,10 +39,10 @@ const sneakerService = {
           );
         }
       } else {
-        console.log("No image_id for sneaker:", sneaker.$id);
+        //console.log("No image_id for sneaker:", sneaker.$id);
       }
     }
-    console.log("Final sneakers with images:", response.data);
+    //console.log("Final sneakers with images:", response.data);
     return response;
   },
   async getSneakersByUser(userId) {
@@ -72,22 +74,20 @@ const sneakerService = {
       return { error: "Missing Appwrite config" };
     }
 
-    const endpoint = process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT.replace(
-      /\/$/,
-      ""
-    );
-    const projectId = process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID;
     const url = `${endpoint}/storage/buckets/${bucketId}/files/${fileId}/view?project=${projectId}`;
 
     return { data: url };
   },
   async addSneakerWithImage(userId, sneaker, imageFile) {
-    const uploadResponse = await this.uploadSneakerImage(imageFile);
-    if (uploadResponse?.error) {
-      return { error: uploadResponse.error };
+    if (imageFile) {
+      const uploadResponse = await this.uploadSneakerImage(imageFile);
+      if (uploadResponse?.error) {
+        return { error: uploadResponse.error };
+      }
+      sneaker.image_id = uploadResponse.data.$id;
+      sneaker.image_uri = uploadResponse.data.uri;
+      //console.log("Uploaded image response:", uploadResponse.data);
     }
-    console.log("Uploaded image response:", uploadResponse);
-    sneaker.image_id = uploadResponse.data.$id;
 
     const response = await this.addSneaker(userId, sneaker);
     return response;
@@ -96,12 +96,15 @@ const sneakerService = {
   /* Add Image to pair with Sneaker */
   async uploadSneakerImage(file) {
     const fileId = ID.unique();
-    console.log("Uploading image file:", file, bucketId, fileId);
+    //console.log("Uploading image file:", file, bucketId, fileId);
     const response = await databaseService.uploadImageToBucket(
       bucketId,
       fileId,
       file
     );
+    const url = `${endpoint}/storage/buckets/${bucketId}/files/${fileId}/view?project=${projectId}`;
+
+    response.uri = url;
     if (response?.error) {
       return { error: response.error };
     }
@@ -109,6 +112,7 @@ const sneakerService = {
   },
   /* Add new sneaker to DB */
   async addSneaker(userId, sneaker) {
+    //console.log("Adding sneaker:", sneaker);
     if (!sneaker.model || !sneaker.size) {
       return { error: "Sneaker model or size not included" };
     }
@@ -120,6 +124,7 @@ const sneakerService = {
       color: sneaker.sneaker_color || undefined,
       user_id: userId || undefined,
       image_id: sneaker.image_id || undefined, // Placeholder for future image upload feature
+      image_uri: sneaker.image_uri || undefined,
     };
     //console.log("Adding sneaker with data:", sneakerData);
     const response = await databaseService.createSneaker(

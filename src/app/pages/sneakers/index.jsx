@@ -1,8 +1,8 @@
 import AddSneakerModal from "@/src/components/AddSneakerModal";
 import SneakersList from "@/src/components/SneakersList";
-import * as ImagePicker from "expo-image-picker";
+import { ImagePicker } from "expo-image-picker";
 import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -29,9 +29,10 @@ const SneakerView = () => {
   /* Editing State for Modal */
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState({});
+  /* ImagePicker handling */
   const [image, setImage] = useState(null);
   const [imageAsset, setImageAsset] = useState(null);
-  const inputRef = useRef(null);
+  const [convertedImage, setConvertedImage] = useState("");
 
   useFocusEffect(
     useCallback(() => {
@@ -89,13 +90,14 @@ const SneakerView = () => {
       newSneaker,
       imageAsset
     );
-
+    //console.log("Add sneaker response:", response.data);
     if (response?.error) {
       Alert.alert("Error:", response.error);
     } else {
       setSneakers([...sneakers, response.data]);
     }
     setImage(null);
+    setImageAsset(null);
     setNewSneaker({});
     setModalVisible(false);
     setAlertMessageVisible(false);
@@ -187,10 +189,13 @@ const SneakerView = () => {
         quality: 1,
       });
       if (!result.canceled) {
-        console.log("Image picked:", result);
+        //console.log("Image picked:", result);
+        /* Convert image to WebP format */
+        //const convertedImage = await convertImageToWebP(result.assets[0].uri);
+        //console.log("Converted image path:", convertedImage);
         setImageAsset(result.assets[0]);
         setImage(result.assets[0].uri);
-        console.log("Image URI:", result.assets[0].uri);
+        //console.log("Image URI:", result.assets[0].uri);
       }
     } catch (error) {
       console.log("Error uploading image:", error);
