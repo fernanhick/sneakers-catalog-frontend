@@ -1,4 +1,5 @@
 import {
+  Image,
   Modal,
   StyleSheet,
   Text,
@@ -22,6 +23,9 @@ const AddSneakerModal = ({
   setIsEditing,
   editedText,
   submitSneakerEdit,
+  /* Camera props */
+  uploadImage,
+  image,
 }) => {
   const handleOnCancel = () => {
     setModalVisible(false);
@@ -29,7 +33,6 @@ const AddSneakerModal = ({
     setAlertMessageVisible(false);
     setIsEditing(false);
   };
-
   return (
     <Modal
       visible={modalVisible}
@@ -61,7 +64,7 @@ const AddSneakerModal = ({
             placeholder="Enter Color"
             placeholderTextColor={"#aaa"}
             value={isEditing ? editedText.color : newSneaker}
-            onChange={(e) => handleOnChange(e, "color")}
+            onChangeText={(e) => handleOnChange(e, "sneaker_color")}
           />
           <TextInput
             style={styles.textInputSize}
@@ -69,6 +72,19 @@ const AddSneakerModal = ({
             placeholderTextColor={"#aaa"}
             value={isEditing ? String(editedText.size) : newSneaker}
             onChangeText={(e) => handleOnChange(e, "size")}
+          />
+          <Image
+            source={
+              image
+                ? { uri: image }
+                : require("../../assets/images/partial-react-logo.png")
+            }
+            style={{
+              width: 150,
+              height: 150,
+              alignSelf: "center",
+              marginBottom: 10,
+            }}
           />
           {alertMessageVisible ? (
             <Text style={styles.alertMessage}>
@@ -84,7 +100,6 @@ const AddSneakerModal = ({
           ) : (
             ""
           )}
-
           <View style={styles.modalButtons}>
             <TouchableOpacity
               style={styles.cancelButton}
@@ -93,6 +108,14 @@ const AddSneakerModal = ({
               }}
             >
               <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => {
+                uploadImage();
+              }}
+            >
+              <Text style={styles.cancelButtonText}>Camera</Text>
             </TouchableOpacity>
             {isEditing ? (
               <TouchableOpacity

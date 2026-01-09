@@ -16,7 +16,7 @@ const HomeScreen = () => {
   const { user, loading: authLoading } = useAuth();
   useEffect(() => {
     if (!authLoading && user) {
-      router.replace("/sneakers");
+      router.push("/pages/sneakers");
     }
   }, [user, authLoading]);
 
@@ -37,7 +37,7 @@ const HomeScreen = () => {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          router.push("/sneakers");
+          router.push("/pages/sneakers");
         }}
       >
         <Text style={styles.buttonText}>Get Started</Text>

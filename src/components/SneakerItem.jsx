@@ -3,7 +3,18 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 const SneakerItem = ({ sneaker, onDelete, onEdit }) => {
   return (
     <View style={styles.sneakerItem}>
-      <Image style={styles.image} />
+      {sneaker.image_uri ? (
+        <Image
+          source={{ uri: sneaker.image_uri }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+      ) : (
+        <View style={[styles.image, styles.placeholder]}>
+          <Text style={styles.placeholderText}>No Image</Text>
+        </View>
+      )}
+
       <View style={styles.sneakerRow}>
         <Text style={styles.sneakerModel} numberOfLines={1}>
           {sneaker.model}
