@@ -33,7 +33,7 @@ const SneakerItem = ({ sneaker, onDelete, onEdit }) => {
         <Pressable
           style={styles.sneakerDelete}
           onPress={() => {
-            onDelete(sneaker.$id);
+            onDelete(sneaker);
           }}
         >
           <Text style={styles.sneakerDeleteText}>Delete</Text>

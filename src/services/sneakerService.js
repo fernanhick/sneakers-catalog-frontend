@@ -23,7 +23,7 @@ const sneakerService = {
     if (response.error) {
       return { error: response.error };
     }
-    for (let sneaker of response.data) {
+    /* for (let sneaker of response.data) {
       if (sneaker.image_id) {
         const imageResponse = await sneakerService.getSneakerImage(
           sneaker.image_id
@@ -41,8 +41,9 @@ const sneakerService = {
       } else {
         //console.log("No image_id for sneaker:", sneaker.$id);
       }
-    }
+    } */
     //console.log("Final sneakers with images:", response.data);
+
     return response;
   },
   async getSneakersByUser(userId) {
@@ -110,6 +111,17 @@ const sneakerService = {
     }
     return { data: response };
   },
+  /* Delete Image from Bucket */
+  async deleteSneakerImage(fileId) {
+    const response = await databaseService.deleteImageFromBucket(
+      bucketId,
+      fileId
+    );
+    if (response?.error) {
+      return { error: response.error };
+    }
+    return { success: true };
+  },
   /* Add new sneaker to DB */
   async addSneaker(userId, sneaker) {
     //console.log("Adding sneaker:", sneaker);
@@ -140,8 +152,22 @@ const sneakerService = {
     return { data: response };
   },
   /* Delete Sneaker from Database using ID */
-  async deleteSneaker(id) {
-    const response = await databaseService.deleteSneakerDB(dbId, colId, id);
+  async deleteSneaker(sneaker) {
+    /* Delete associated image first */
+    if (sneaker.image_id !== null) {
+      console.log("Deleting associated image:", sneaker.image_id);
+      const imageDeleteResponse = await this.deleteSneakerImage(
+        sneaker.image_id
+      );
+      if (imageDeleteResponse?.error) {
+        return { error: imageDeleteResponse.error };
+      } // Image deleted successfully
+    }
+    const response = await databaseService.deleteSneakerDB(
+      dbId,
+      colId,
+      sneaker.$id
+    );
     if (response?.error) {
       return { error: response.error };
     }

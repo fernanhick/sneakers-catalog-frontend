@@ -55,6 +55,16 @@ const databaseService = {
       return { error: error.message };
     }
   },
+  /* Image Deletion */
+  async deleteImageFromBucket(bucketId, fileId) {
+    try {
+      await storage.deleteFile({ bucketId: bucketId, fileId: fileId });
+      return { success: true };
+    } catch (error) {
+      console.error("Error deleting image:", error.message);
+      return { error: error.message };
+    }
+  },
   /* Created Sneakers Item in DB*/
 
   async createSneaker(dbId, colId, id = null, sneakerData) {

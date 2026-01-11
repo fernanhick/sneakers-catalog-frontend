@@ -136,7 +136,7 @@ const SneakerView = () => {
     setIsEditing(false);
   };
   /* Delete Function */
-  const deleteListItem = async (id) => {
+  const deleteListItem = async (sneakerData) => {
     /* Display alert for confirming deletion using alert multiple fields */
     Alert.alert("Delete Sneaker", "Are you sure you want to delete the item", [
       { text: "Cancel", style: "cancel" },
@@ -144,12 +144,14 @@ const SneakerView = () => {
         text: "Delete",
         style: "destructive",
         onPress: async () => {
-          const response = await sneakerService.deleteSneaker(id);
+          const response = await sneakerService.deleteSneaker(sneakerData);
           if (response.error) {
             Alert.alert("Error", response.error);
           } else {
             /* This will delete item on list by filtering out the id if sucessful */
-            setSneakers(sneakers.filter((sneaker) => sneaker.$id !== id));
+            setSneakers(
+              sneakers.filter((sneaker) => sneaker.$id !== sneakerData.$id)
+            );
           }
         },
       },
