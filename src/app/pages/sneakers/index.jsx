@@ -1,6 +1,6 @@
 import AddSneakerModal from "@/src/components/AddSneakerModal";
 import SneakersList from "@/src/components/SneakersList";
-import { ImagePicker } from "expo-image-picker";
+import * as ImagePicker from "expo-image-picker";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
