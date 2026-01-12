@@ -1,6 +1,7 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   Modal,
   StyleSheet,
@@ -40,15 +41,18 @@ const AddSneakerModal = ({
     setIsEditing(false);
   };
   const handleAiInput = async (data) => {
-    const response = await aiService.getSneakerDescription(data);
     setLoadingAi(true);
-    setAiSneakerResponse(response);
+    const response = await aiService
+      .analyzeImage(data)
+      .then((res) => console.log("AI Response in Modal:", res))
+      .finally((res) => {
+        return res;
+      });
+    console.log("AI Response Set:", response);
+    console.log("AI Sneaker Response:", aiSneakerResponse);
+    setLoadingAi(false);
   };
-  useState(() => {
-    if (loadingAi && aiSneakerResponse) {
-      console.log("rerendering with AI response:", aiSneakerResponse);
-    }
-  }, [loadingAi, aiSneakerResponse]);
+
   return (
     <Modal
       visible={modalVisible}
@@ -65,35 +69,21 @@ const AddSneakerModal = ({
             style={styles.textInputModel}
             placeholder="Enter Model"
             placeholderTextColor={"#aaa"}
-            value={
-              isEditing
-                ? editedText.model
-                : loadingAi
-                ? aiSneakerResponse.model
-                : newSneaker.model
-            }
+            value={isEditing ? editedText.model : newSneaker.model}
             onChangeText={(e) => handleOnChange(e, "model")}
           />
           <TextInput
             style={styles.textInputModel}
             placeholder="Enter Brand"
             placeholderTextColor={"#aaa"}
-            value={
-              aiSneakerResponse ? aiSneakerResponse.brand : newSneaker.brand
-            }
+            value={isEditing ? editedText.brand : newSneaker.brand}
             onChangeText={(e) => handleOnChange(e, "brand")}
           />
           <TextInput
             style={styles.textInputModel}
             placeholder="Enter Color"
             placeholderTextColor={"#aaa"}
-            value={
-              isEditing
-                ? editedText.color
-                : loadingAi
-                ? aiSneakerResponse.color
-                : newSneaker.color
-            }
+            value={isEditing ? editedText.color : newSneaker.color}
             onChangeText={(e) => handleOnChange(e, "sneaker_color")}
           />
           <TextInput
@@ -198,7 +188,11 @@ const AddSneakerModal = ({
                 handleAiInput(imageAsset.base64);
               }}
             >
-              <Text style={styles.cancelButtonText}>AI Detection</Text>
+              {loadingAi ? (
+                <ActivityIndicator animating={loadingAi} size="small" />
+              ) : (
+                <Text style={styles.cancelButtonText}>AI Detection</Text>
+              )}
             </TouchableOpacity>
           </View>
 

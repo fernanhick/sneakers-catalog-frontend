@@ -32,8 +32,8 @@ const SneakerView = () => {
   /* ImagePicker handling */
   const [image, setImage] = useState(null);
   const [imageAsset, setImageAsset] = useState(null);
-  const [convertedImage, setConvertedImage] = useState("");
 
+  /* Redirect to auth if not logged in */
   useFocusEffect(
     useCallback(() => {
       if (!user && !authLoading) {
@@ -188,7 +188,7 @@ const SneakerView = () => {
       const result = await ImagePicker.launchCameraAsync({
         allowsEditing: true,
         aspect: [1, 1],
-        quality: 0.4,
+        quality: 0.1,
         base64: true,
       });
       if (!result.canceled) {

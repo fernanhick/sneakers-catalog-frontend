@@ -4,7 +4,7 @@ const client = new OpenAI({ apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY });
 
 const aiService = {
   async getSneakerDescription(sneakerImg) {
-    //console.log("Generating description for image:", sneakerImg);
+    console.log("Generating description for image:");
     try {
       const response = await client.responses.create({
         model: "gpt-4.1-mini",
@@ -33,8 +33,8 @@ const aiService = {
     }
   },
 
-  async analyzeImage(base64Image) {
-    const response = await fetch("https://api.openai.com/v1/responses", {
+  async analyzeImage(sneakerImg) {
+    return await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_API_KEY}`,
@@ -46,20 +46,38 @@ const aiService = {
           {
             role: "user",
             content: [
-              { type: "input_text", text: "Describe this image." },
+              {
+                type: "input_text",
+                text: "Detect only shoe/sneaker in image and provide detailed information. Format the response with keys: shoe_detected, brand, model, color, average_price, hex_color_code, release_year, description.",
+              },
               {
                 type: "input_image",
-                image_base64: base64Image,
+                image_url: `data:image/jpeg;base64,${sneakerImg}`,
               },
             ],
           },
         ],
       }),
-    });
-
-    const data = await response.json();
-    console.log("Image analysis response:", data);
-    return data.output_text;
+    })
+      .then((data) => {
+        console.log("Sneaker analysis response status:", data.status);
+        return data.json();
+      })
+      .then((data) => {
+        console.log(
+          "Sneaker analysis response data:",
+          data.output[0].content[0].text
+        );
+        return data.output[0].content[0].text;
+      })
+      .catch((error) => {
+        console.error("Error in analyzeImage fetch:", error);
+        throw error;
+      })
+      .finally((data) => {
+        console.log("Finished analyzeImage request.");
+        return data;
+      });
   },
 };
 
