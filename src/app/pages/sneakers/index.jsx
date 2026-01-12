@@ -188,13 +188,15 @@ const SneakerView = () => {
       const result = await ImagePicker.launchCameraAsync({
         allowsEditing: true,
         aspect: [1, 1],
-        quality: 1,
+        quality: 0.4,
+        base64: true,
       });
       if (!result.canceled) {
         //console.log("Image picked:", result);
         /* Convert image to WebP format */
         //const convertedImage = await convertImageToWebP(result.assets[0].uri);
         //console.log("Converted image path:", convertedImage);
+
         setImageAsset(result.assets[0]);
         setImage(result.assets[0].uri);
         //console.log("Image URI:", result.assets[0].uri);
@@ -259,7 +261,9 @@ const SneakerView = () => {
         submitSneakerEdit={submitSneakerEdit}
         /* Camera props*/
         uploadImage={uploadImage}
+        imageAsset={imageAsset}
         image={image}
+        setImage={setImage}
       />
     </View>
   );

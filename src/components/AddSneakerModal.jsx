@@ -1,3 +1,5 @@
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useState } from "react";
 import {
   Image,
   Modal,
@@ -7,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
+import aiService from "../services/aiService";
 const AddSneakerModal = ({
   modalVisible,
   setModalVisible,
@@ -26,13 +28,27 @@ const AddSneakerModal = ({
   /* Camera props */
   uploadImage,
   image,
+  setImage,
+  imageAsset,
 }) => {
+  const [aiSneakerResponse, setAiSneakerResponse] = useState(null);
+  const [loadingAi, setLoadingAi] = useState(false);
   const handleOnCancel = () => {
     setModalVisible(false);
     setAlertMessageVisibleSize(false);
     setAlertMessageVisible(false);
     setIsEditing(false);
   };
+  const handleAiInput = async (data) => {
+    const response = await aiService.getSneakerDescription(data);
+    setLoadingAi(true);
+    setAiSneakerResponse(response);
+  };
+  useState(() => {
+    if (loadingAi && aiSneakerResponse) {
+      console.log("rerendering with AI response:", aiSneakerResponse);
+    }
+  }, [loadingAi, aiSneakerResponse]);
   return (
     <Modal
       visible={modalVisible}
@@ -49,43 +65,108 @@ const AddSneakerModal = ({
             style={styles.textInputModel}
             placeholder="Enter Model"
             placeholderTextColor={"#aaa"}
-            value={isEditing ? editedText.model : newSneaker}
+            value={
+              isEditing
+                ? editedText.model
+                : loadingAi
+                ? aiSneakerResponse.model
+                : newSneaker.model
+            }
             onChangeText={(e) => handleOnChange(e, "model")}
           />
           <TextInput
             style={styles.textInputModel}
             placeholder="Enter Brand"
             placeholderTextColor={"#aaa"}
-            value={isEditing ? editedText.brand : newSneaker}
+            value={
+              aiSneakerResponse ? aiSneakerResponse.brand : newSneaker.brand
+            }
             onChangeText={(e) => handleOnChange(e, "brand")}
           />
           <TextInput
             style={styles.textInputModel}
             placeholder="Enter Color"
             placeholderTextColor={"#aaa"}
-            value={isEditing ? editedText.color : newSneaker}
+            value={
+              isEditing
+                ? editedText.color
+                : loadingAi
+                ? aiSneakerResponse.color
+                : newSneaker.color
+            }
             onChangeText={(e) => handleOnChange(e, "sneaker_color")}
           />
           <TextInput
             style={styles.textInputSize}
             placeholder="Enter Size"
             placeholderTextColor={"#aaa"}
-            value={isEditing ? String(editedText.size) : newSneaker}
+            value={isEditing ? String(editedText.size) : newSneaker.size}
             onChangeText={(e) => handleOnChange(e, "size")}
           />
-          <Image
-            source={
-              image
-                ? { uri: image }
-                : require("../../assets/images/partial-react-logo.png")
-            }
+          <View
             style={{
-              width: 150,
-              height: 150,
-              alignSelf: "center",
+              /* width: "100%",
+              height: 180, */
+              justifyContent: "center",
+
               marginBottom: 10,
             }}
-          />
+          >
+            {image ? (
+              <View>
+                <Image
+                  source={
+                    image
+                      ? { uri: image }
+                      : require("../../assets/images/partial-react-logo.png")
+                  }
+                  style={{
+                    width: "100%",
+                    aspectRatio: 1,
+                    alignSelf: "center",
+                    marginBottom: 10,
+                  }}
+                />
+                <TouchableOpacity
+                  style={{
+                    alignSelf: "center",
+                    position: "absolute",
+                    top: 1,
+                    right: 1,
+                  }}
+                  onPress={() => setImage(null)}
+                >
+                  <MaterialCommunityIcons
+                    name="close-box"
+                    size={24}
+                    color="red"
+                  />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View
+                style={{
+                  height: 100,
+                  justifyContent: "center",
+                  gap: 10,
+                }}
+              >
+                <TouchableOpacity
+                  style={styles.saveButton}
+                  onPress={() => uploadImage()}
+                >
+                  <Text style={styles.saveButtonText}>Upload Image</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.saveButton}
+                  onPress={() => uploadImage()}
+                >
+                  <Text style={styles.saveButtonText}>Capture Image</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+
           {alertMessageVisible ? (
             <Text style={styles.alertMessage}>
               Please insert Model and Size
@@ -100,6 +181,27 @@ const AddSneakerModal = ({
           ) : (
             ""
           )}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginBottom: 10,
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                ...styles.cancelButton,
+                backgroundColor: "#28a745",
+              }}
+              onPress={() => {
+                //console.log("imageBase64:", imageAsset.base64);
+                handleAiInput(imageAsset.base64);
+              }}
+            >
+              <Text style={styles.cancelButtonText}>AI Detection</Text>
+            </TouchableOpacity>
+          </View>
+
           <View style={styles.modalButtons}>
             <TouchableOpacity
               style={styles.cancelButton}
@@ -109,14 +211,7 @@ const AddSneakerModal = ({
             >
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={() => {
-                uploadImage();
-              }}
-            >
-              <Text style={styles.cancelButtonText}>Camera</Text>
-            </TouchableOpacity>
+
             {isEditing ? (
               <TouchableOpacity
                 style={styles.saveButton}
