@@ -2,7 +2,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import {
   ActivityIndicator,
   Image,
-  Modal,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -36,6 +36,8 @@ const AddSneakerModal = ({
   handleAiInput,
   /* loading AI */
   loadingAi,
+  /* BottomSheet */
+  handleClosePress,
 }) => {
   /*   const [aiSneakerResponse, setAiSneakerResponse] = useState([]);
   const [loadingAi, setLoadingAi] = useState(false);
@@ -47,6 +49,7 @@ const AddSneakerModal = ({
     setAlertMessageVisibleSize(false);
     setAlertMessageVisible(false);
     setIsEditing(false);
+    handleClosePress();
   };
   /* const handleAiInput = async (data) => {
     setLoadingAi(true);
@@ -73,178 +76,161 @@ const AddSneakerModal = ({
   }, [aiSneakerResponse]); */
 
   return (
-    <Modal
-      visible={modalVisible}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={() => setModalVisible(false)}
-    >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>
-            {isEditing ? "Edit Sneaker" : "Add Sneaker"}
-          </Text>
+    <ScrollView style={styles.modalContent}>
+      <Text style={styles.modalTitle}>
+        {isEditing ? "Edit Sneaker" : "Add Sneaker"}
+      </Text>
 
-          <TextInput
-            style={styles.textInput}
-            placeholder="Enter Brand"
-            placeholderTextColor={"#aaa"}
-            value={isEditing ? editedText.brand : newSneaker.brand}
-            onChangeText={(e) => handleOnChange(e, "brand")}
-          />
-          <TextInput
-            style={styles.textInput}
-            placeholder="Enter Model"
-            placeholderTextColor={"#aaa"}
-            value={isEditing ? editedText.model : newSneaker.model}
-            onChangeText={(e) => handleOnChange(e, "model")}
-          />
-          <TextInput
-            style={styles.textInput}
-            placeholder="Enter Color"
-            placeholderTextColor={"#aaa"}
-            value={isEditing ? editedText.color : newSneaker.color}
-            onChangeText={(e) => handleOnChange(e, "color")}
-          />
-          <TextInput
-            style={styles.textInput}
-            placeholder="Enter Size"
-            placeholderTextColor={"#aaa"}
-            value={isEditing ? String(editedText.size) : newSneaker.size}
-            onChangeText={(e) => handleOnChange(e, "size")}
-          />
-          <View
-            style={{
-              /* width: "100%",
+      <TextInput
+        style={styles.textInput}
+        placeholder="Enter Brand"
+        placeholderTextColor={"#aaa"}
+        value={isEditing ? editedText.brand : newSneaker.brand}
+        onChangeText={(e) => handleOnChange(e, "brand")}
+      />
+      <TextInput
+        style={styles.textInput}
+        placeholder="Enter Model"
+        placeholderTextColor={"#aaa"}
+        value={isEditing ? editedText.model : newSneaker.model}
+        onChangeText={(e) => handleOnChange(e, "model")}
+      />
+      <TextInput
+        style={styles.textInput}
+        placeholder="Enter Color"
+        placeholderTextColor={"#aaa"}
+        value={isEditing ? editedText.color : newSneaker.color}
+        onChangeText={(e) => handleOnChange(e, "color")}
+      />
+      <TextInput
+        style={styles.textInput}
+        placeholder="Enter Size"
+        placeholderTextColor={"#aaa"}
+        value={isEditing ? String(editedText.size) : newSneaker.size}
+        onChangeText={(e) => handleOnChange(e, "size")}
+      />
+      <View
+        style={{
+          /* width: "100%",
               height: 180, */
-              justifyContent: "center",
+          justifyContent: "center",
 
-              marginBottom: 10,
-            }}
-          >
-            {image ? (
-              <View>
-                <Image
-                  source={
-                    image
-                      ? { uri: image }
-                      : require("../../assets/images/partial-react-logo.png")
-                  }
-                  style={{
-                    width: "100%",
-                    aspectRatio: 1,
-                    alignSelf: "center",
-                    marginBottom: 10,
-                  }}
-                />
-                <TouchableOpacity
-                  style={{
-                    alignSelf: "center",
-                    position: "absolute",
-                    top: 1,
-                    right: 1,
-                  }}
-                  onPress={() => setImage(null)}
-                >
-                  <MaterialCommunityIcons
-                    name="close-box"
-                    size={24}
-                    color="red"
-                  />
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <View
-                style={{
-                  height: 100,
-                  justifyContent: "center",
-                  gap: 10,
-                }}
-              >
-                <TouchableOpacity
-                  style={styles.saveButton}
-                  onPress={() => uploadImage()}
-                >
-                  <Text style={styles.saveButtonText}>Upload Image</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.saveButton}
-                  onPress={() => uploadImage()}
-                >
-                  <Text style={styles.saveButtonText}>Capture Image</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
-
-          {alertMessageVisible ? (
-            <Text style={styles.alertMessage}>
-              Please insert Model and Size
-            </Text>
-          ) : (
-            ""
-          )}
-          {alertMessageVisibleSize ? (
-            <Text style={styles.alertMessage}>
-              Please insert a number for Size
-            </Text>
-          ) : (
-            ""
-          )}
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginBottom: 10,
-            }}
-          >
+          marginBottom: 10,
+        }}
+      >
+        {image ? (
+          <View>
+            <Image
+              source={
+                image
+                  ? { uri: image }
+                  : require("../../assets/images/partial-react-logo.png")
+              }
+              style={{
+                width: "50%",
+                aspectRatio: 1,
+                alignSelf: "center",
+                marginBottom: 10,
+              }}
+            />
             <TouchableOpacity
               style={{
-                ...styles.cancelButton,
-                backgroundColor: "#28a745",
+                alignSelf: "center",
+                position: "absolute",
+                top: 1,
+                right: 1,
               }}
-              onPress={() => {
-                //console.log("imageBase64:", imageAsset.base64);
-                handleAiInput(imageAsset.base64);
-              }}
+              onPress={() => setImage(null)}
             >
-              {loadingAi ? (
-                <ActivityIndicator animating={loadingAi} size="small" />
-              ) : (
-                <Text style={styles.cancelButtonText}>AI Detection</Text>
-              )}
+              <MaterialCommunityIcons name="close-box" size={24} color="red" />
             </TouchableOpacity>
           </View>
-
-          <View style={styles.modalButtons}>
+        ) : (
+          <View
+            style={{
+              height: 100,
+              justifyContent: "center",
+              gap: 10,
+            }}
+          >
             <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={() => {
-                handleOnCancel();
-              }}
+              style={styles.saveButton}
+              onPress={() => uploadImage()}
             >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
+              <Text style={styles.saveButtonText}>Upload Image</Text>
             </TouchableOpacity>
-
-            {isEditing ? (
-              <TouchableOpacity
-                style={styles.saveButton}
-                onPress={() => submitSneakerEdit()}
-              >
-                <Text style={styles.saveButtonText}>Save Editing</Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                style={styles.saveButton}
-                onPress={() => submitSneaker()}
-              >
-                <Text style={styles.saveButtonText}>Save</Text>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity
+              style={styles.saveButton}
+              onPress={() => uploadImage()}
+            >
+              <Text style={styles.saveButtonText}>Capture Image</Text>
+            </TouchableOpacity>
           </View>
-        </View>
+        )}
       </View>
-    </Modal>
+
+      {alertMessageVisible ? (
+        <Text style={styles.alertMessage}>Please insert Model and Size</Text>
+      ) : (
+        ""
+      )}
+      {alertMessageVisibleSize ? (
+        <Text style={styles.alertMessage}>Please insert a number for Size</Text>
+      ) : (
+        ""
+      )}
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginBottom: 10,
+        }}
+      >
+        <TouchableOpacity
+          style={{
+            ...styles.cancelButton,
+            backgroundColor: "#28a745",
+          }}
+          onPress={() => {
+            //console.log("imageBase64:", imageAsset.base64);
+            handleAiInput(imageAsset.base64);
+          }}
+        >
+          {loadingAi ? (
+            <ActivityIndicator animating={loadingAi} size="small" />
+          ) : (
+            <Text style={styles.cancelButtonText}>AI Detection</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.modalButtons}>
+        <TouchableOpacity
+          style={styles.cancelButton}
+          onPress={() => {
+            handleOnCancel();
+          }}
+        >
+          <Text style={styles.cancelButtonText}>Cancel</Text>
+        </TouchableOpacity>
+
+        {isEditing ? (
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={() => submitSneakerEdit()}
+          >
+            <Text style={styles.saveButtonText}>Save Editing</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={() => submitSneaker()}
+          >
+            <Text style={styles.saveButtonText}>Save</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    </ScrollView>
   );
 };
 
@@ -257,20 +243,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContent: {
-    backgroundColor: "#fff",
+    backgroundColor: "#242424ff",
     padding: 10,
     borderRadius: 10,
-    width: "60%",
+    width: "100%",
+    height: "100%",
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 10,
+    color: "white",
   },
   textInput: {
     borderWidth: 1,
     borderBlockColor: "#ccc",
+    backgroundColor: "white",
     borderRadius: 8,
     fontSize: 16,
     padding: 10,

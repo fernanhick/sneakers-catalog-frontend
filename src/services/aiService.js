@@ -1,10 +1,8 @@
-import OpenAI from "openai";
-
-const client = new OpenAI({ apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY });
+//const client = new OpenAI({ apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY });
 const controller = new AbortController();
 const timedoutId = setTimeout(() => controller.abort(), 90000); // 90 seconds timeout
 const aiService = {
-  async getSneakerDescription(sneakerImg) {
+  /* async getSneakerDescription(sneakerImg) {
     console.log("Generating description for image:");
     try {
       const response = await client.responses.create({
@@ -35,7 +33,7 @@ const aiService = {
       console.error("Error generating sneaker description:", error);
       throw error;
     }
-  },
+  }, */
 
   async analyzeImage(sneakerImg) {
     try {

@@ -1,10 +1,12 @@
 import AddSneakerModal from "@/src/components/AddSneakerModal";
 import SneakersList from "@/src/components/SneakersList";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import BottomSheet from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
 import {
   ActivityIndicator,
   Alert,
@@ -245,6 +247,23 @@ const SneakerView = () => {
     }
   };
 
+  /* Bottom Sheet */
+  // hooks
+  const sheetRef = useRef(null);
+
+  const snapPoints = useMemo(() => ["25%", "50%", "90%"], []);
+
+  // callbacks
+  const handleSheetChange = useCallback((index) => {
+    console.log("handleSheetChange", index);
+  }, []);
+  const handleSnapPress = useCallback((index) => {
+    sheetRef.current?.snapToIndex(index);
+  }, []);
+  const handleClosePress = useCallback(() => {
+    sheetRef.current?.close();
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.topMenu}>
@@ -255,6 +274,12 @@ const SneakerView = () => {
           onPress={() => setModalVisible(true)}
         >
           <Text style={styles.buttonText}>Add Sneaker</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handleSnapPress(2)}
+        >
+          <Text style={styles.buttonText}>Add Sheet</Text>
         </TouchableOpacity>
         <Text style={styles.topMenuText}>Top</Text>
         <TouchableOpacity
@@ -301,34 +326,47 @@ const SneakerView = () => {
       )}
 
       {/* MODAL */}
-      <AddSneakerModal
-        /* Editing section */
-        isEditing={isEditing}
-        setIsEditing={setIsEditing}
-        editedText={editedText}
-        /* Modal visibility */
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        newSneaker={newSneaker}
-        setNewSneaker={setNewSneaker}
-        alertMessageVisible={alertMessageVisible}
-        setAlertMessageVisible={setAlertMessageVisible}
-        alertMessageVisibleSize={alertMessageVisibleSize}
-        setAlertMessageVisibleSize={setAlertMessageVisibleSize}
-        submitSneaker={submitSneaker}
-        handleOnChange={handleOnChange}
-        submitSneakerEdit={submitSneakerEdit}
-        /* Camera props*/
-        uploadImage={uploadImage}
-        imageAsset={imageAsset}
-        image={image}
-        setImage={setImage}
-        /* AI props */
-        isAiContentLoaded={isAiContentLoaded}
-        aiSneakerResponse={aiSneakerResponse}
-        handleAiInput={handleAiInput}
-        loadingAi={loadingAi}
-      />
+      <BottomSheet
+        ref={sheetRef}
+        index={-1}
+        snapPoints={snapPoints}
+        enableDynamicSizing={false}
+        onChange={handleSheetChange}
+        enablePanDownToClose={true}
+        handleClosePress
+        backgroundStyle="blue"
+      >
+        <AddSneakerModal
+          /* Editing section */
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+          editedText={editedText}
+          /* Modal visibility */
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          newSneaker={newSneaker}
+          setNewSneaker={setNewSneaker}
+          alertMessageVisible={alertMessageVisible}
+          setAlertMessageVisible={setAlertMessageVisible}
+          alertMessageVisibleSize={alertMessageVisibleSize}
+          setAlertMessageVisibleSize={setAlertMessageVisibleSize}
+          submitSneaker={submitSneaker}
+          handleOnChange={handleOnChange}
+          submitSneakerEdit={submitSneakerEdit}
+          /* Camera props*/
+          uploadImage={uploadImage}
+          imageAsset={imageAsset}
+          image={image}
+          setImage={setImage}
+          /* AI props */
+          isAiContentLoaded={isAiContentLoaded}
+          aiSneakerResponse={aiSneakerResponse}
+          handleAiInput={handleAiInput}
+          loadingAi={loadingAi}
+          /* BottomSheet Handle */
+          handleClosePress={handleClosePress}
+        />
+      </BottomSheet>
     </View>
   );
 };
