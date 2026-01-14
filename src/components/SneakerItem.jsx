@@ -1,3 +1,4 @@
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 const SneakerItem = ({ sneaker, onDelete, onEdit }) => {
@@ -19,7 +20,7 @@ const SneakerItem = ({ sneaker, onDelete, onEdit }) => {
         <Text style={styles.sneakerModel} numberOfLines={1}>
           {sneaker.model}
         </Text>
-        <Text style={styles.sneakerSize}>size: {sneaker.size}</Text>
+        <Text style={styles.sneakerBrand}>{sneaker.brand}</Text>
       </View>
       <View style={styles.itemControllers}>
         <Pressable
@@ -28,7 +29,7 @@ const SneakerItem = ({ sneaker, onDelete, onEdit }) => {
             onEdit(sneaker.$id);
           }}
         >
-          <Text style={styles.sneakerEditText}>Edit</Text>
+          <MaterialIcons name="mode-edit" size={32} color="#ff8c00" />
         </Pressable>
         <Pressable
           style={styles.sneakerDelete}
@@ -36,7 +37,7 @@ const SneakerItem = ({ sneaker, onDelete, onEdit }) => {
             onDelete(sneaker);
           }}
         >
-          <Text style={styles.sneakerDeleteText}>Delete</Text>
+          <MaterialIcons name="delete-forever" size={32} color="#ff8c00" />
         </Pressable>
       </View>
     </View>
@@ -47,25 +48,35 @@ const styles = StyleSheet.create({
   sneakerItem: {
     flex: 1,
     flexDirection: "row",
-    backgroundColor: "#ebebebff",
+    //backgroundColor: "#ff8c00",
+    backgroundColor: "#2b2b2bff",
     padding: 0,
     margin: 2,
     borderRadius: 10,
     gap: 10,
     maxWidth: 400,
+    borderBottomColor: "#a8a8a8ff",
+    borderBottomWidth: 1,
+    borderRightColor: "#a8a8a8ff",
+    borderRightWidth: 1,
   },
   sneakerModel: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "#ffffff",
   },
   sneakerSize: {
     fontSize: 18,
     fontWeight: "bold",
   },
+  sneakerBrand: {
+    fontSize: 18,
+    color: "#d3d3d3ff",
+  },
   image: {
     height: 50,
     width: 50,
-    backgroundColor: "#aaa",
+    backgroundColor: "#ffffffff",
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
   },
@@ -80,14 +91,20 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
   sneakerDelete: {
-    backgroundColor: "red",
+    //borderLeftWidth: 1,
+    borderLeftColor: "#ff8c00",
     width: 50,
+    alignItems: "center",
+    justifyContent: "center",
     borderBottomRightRadius: 5,
     borderTopRightRadius: 5,
   },
   sneakerEdit: {
-    backgroundColor: "green",
+    //borderLeftWidth: 1,
+    borderLeftColor: "#ff8c00",
     width: 50,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

@@ -1,7 +1,8 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Image,
   Modal,
   StyleSheet,
@@ -32,8 +33,9 @@ const AddSneakerModal = ({
   setImage,
   imageAsset,
 }) => {
-  const [aiSneakerResponse, setAiSneakerResponse] = useState(null);
+  const [aiSneakerResponse, setAiSneakerResponse] = useState({});
   const [loadingAi, setLoadingAi] = useState(false);
+  const [isAiContentLoaded, setIsAiContentLoaded] = useState(false);
   const handleOnCancel = () => {
     setModalVisible(false);
     setAlertMessageVisibleSize(false);
@@ -42,16 +44,24 @@ const AddSneakerModal = ({
   };
   const handleAiInput = async (data) => {
     setLoadingAi(true);
-    const response = await aiService
-      .analyzeImage(data)
-      .then((res) => console.log("AI Response in Modal:", res))
-      .finally((res) => {
-        return res;
-      });
-    console.log("AI Response Set:", response);
-    console.log("AI Sneaker Response:", aiSneakerResponse);
-    setLoadingAi(false);
+    const response = await aiService.analyzeImage(data);
+    console.log("AI Service Response:", response);
+    if (response?.error) {
+      Alert.alert("AI Error", response.error);
+      setLoadingAi(false);
+      return;
+    }
+    if (!response?.error) {
+      setAiSneakerResponse(response);
+      setIsAiContentLoaded(true);
+      console.log("AI Response Set:", response);
+      setLoadingAi(false);
+    }
+    console.log("Final AI Response:", response);
   };
+  useEffect(() => {
+    console.log("AI Sneaker Response Updated:", aiSneakerResponse);
+  }, [aiSneakerResponse]);
 
   return (
     <Modal
@@ -63,21 +73,32 @@ const AddSneakerModal = ({
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>
-            {isEditing ? "Edit Sneaker" : "Add Sneaker"}
+            {isEditing
+              ? "Edit Sneaker"
+              : isAiContentLoaded
+              ? "Add Sneaker (AI Detected)"
+              : "Add Sneaker"}
           </Text>
+
+          <TextInput
+            style={styles.textInputModel}
+            placeholder="Enter Brand"
+            placeholderTextColor={"#aaa"}
+            value={
+              isEditing
+                ? editedText.brand
+                : isAiContentLoaded
+                ? aiSneakerResponse.brand
+                : newSneaker.brand
+            }
+            onChangeText={(e) => handleOnChange(e, "brand")}
+          />
           <TextInput
             style={styles.textInputModel}
             placeholder="Enter Model"
             placeholderTextColor={"#aaa"}
             value={isEditing ? editedText.model : newSneaker.model}
             onChangeText={(e) => handleOnChange(e, "model")}
-          />
-          <TextInput
-            style={styles.textInputModel}
-            placeholder="Enter Brand"
-            placeholderTextColor={"#aaa"}
-            value={isEditing ? editedText.brand : newSneaker.brand}
-            onChangeText={(e) => handleOnChange(e, "brand")}
           />
           <TextInput
             style={styles.textInputModel}
