@@ -67,6 +67,7 @@ const aiService = {
       });
 
       clearTimeout(timedoutId);
+      console.log("AI analyzeImage raw response:", response);
       console.log("Sneaker analysis response status:", response.status);
       const data = await response.json();
       //console.log("Sneaker analysis response data:", data);
@@ -78,8 +79,8 @@ const aiService = {
             "Rate limit exceeded. Please try again later.",
         };
     } catch (error) {
-      console.error("Error analyzing sneaker image:", error);
-      throw error;
+      console.error("Error analyzing sneaker image:", error.message);
+      //throw error;
     }
 
     /* .then((data) => {

@@ -2,7 +2,6 @@ import { Drawer } from "expo-router/drawer";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LogoutButton from "../components/LogoutButton";
 import { AuthProvider } from "../contexts/AuthContexts";
-
 const RootLayout = () => {
   return (
     <AuthProvider>
@@ -34,7 +33,7 @@ const RootLayout = () => {
           <Drawer.Screen
             name="pages/sneakers"
             options={{
-              headerTitle: "sneakers",
+              headerTitle: "Sneakers",
               drawerLabel: "Sneakers",
             }}
           />

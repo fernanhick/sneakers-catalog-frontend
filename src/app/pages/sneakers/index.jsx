@@ -1,5 +1,6 @@
 import AddSneakerModal from "@/src/components/AddSneakerModal";
 import SneakersList from "@/src/components/SneakersList";
+import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
@@ -12,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { useAuth } from "../../../contexts/AuthContexts";
+import aiService from "../../../services/aiService";
 import sneakerService from "../../../services/sneakerService";
 
 const SneakerView = () => {
@@ -22,6 +24,7 @@ const SneakerView = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [sneakers, setSneakers] = useState([]);
+  const navigation = useNavigation();
 
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
@@ -32,6 +35,11 @@ const SneakerView = () => {
   /* ImagePicker handling */
   const [image, setImage] = useState(null);
   const [imageAsset, setImageAsset] = useState(null);
+
+  /* Ai content detection */
+  const [aiSneakerResponse, setAiSneakerResponse] = useState([]);
+  const [loadingAi, setLoadingAi] = useState(false);
+  const [isAiContentLoaded, setIsAiContentLoaded] = useState(false);
 
   /* Redirect to auth if not logged in */
   useFocusEffect(
@@ -66,10 +74,37 @@ const SneakerView = () => {
     }
   };
 
+  const handleAiInput = async (data) => {
+    setLoadingAi(true);
+    //console.log("Handling AI Input with data:", data);
+    const response = await aiService.analyzeImage(data);
+    console.log("AI Service Response:", response);
+    if (response?.error) {
+      Alert.alert("AI Error", response.error);
+      setLoadingAi(false);
+      return;
+    }
+    if (!response?.error) {
+      const aiRes = JSON.parse(response);
+      setNewSneaker((prevState) => ({
+        ...prevState,
+        ["model"]: aiRes.model,
+        ["brand"]: aiRes.brand,
+        ["color"]: aiRes.color,
+        ["size"]: aiRes.size,
+      }));
+      setIsAiContentLoaded(true);
+      console.log("AI Response Set:", response);
+      setLoadingAi(false);
+    }
+    console.log("Final AI Response:", response);
+  };
+
   /* Handle changes in the Text input and append into current object to be injected in the sneakers list */
   const handleOnChange = (text, input) => {
     if (!isEditing) {
       setNewSneaker((prevState) => ({ ...prevState, [input]: text }));
+      console.log("New Sneaker State:", newSneaker);
     } else {
       setEditedText((prevState) => ({ ...prevState, [input]: text }));
     }
@@ -102,6 +137,8 @@ const SneakerView = () => {
     setModalVisible(false);
     setAlertMessageVisible(false);
     setAlertMessageVisibleSize(false);
+    setAiSneakerResponse([]);
+    setIsAiContentLoaded(false);
   };
   /* Update Sneaker Items */
   const submitSneakerEdit = async () => {
@@ -235,12 +272,20 @@ const SneakerView = () => {
       )}
 
       {/* ADD SNEAKER BUTTON */}
+
       <TouchableOpacity
         style={styles.button}
         onPress={() => setModalVisible(true)}
       >
         <Text style={styles.buttonText}>Add Sneaker</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.navigate("screens/AddSneakerScreen")}
+      >
+        <Text style={styles.buttonText}>Test Bottom Sheet</Text>
+      </TouchableOpacity>
+
       {/* MODAL */}
       <AddSneakerModal
         /* Editing section */
@@ -264,6 +309,11 @@ const SneakerView = () => {
         imageAsset={imageAsset}
         image={image}
         setImage={setImage}
+        /* AI props */
+        isAiContentLoaded={isAiContentLoaded}
+        aiSneakerResponse={aiSneakerResponse}
+        handleAiInput={handleAiInput}
+        loadingAi={loadingAi}
       />
     </View>
   );

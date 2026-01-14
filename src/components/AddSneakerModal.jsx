@@ -1,8 +1,6 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Image,
   Modal,
   StyleSheet,
@@ -11,7 +9,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import aiService from "../services/aiService";
 const AddSneakerModal = ({
   modalVisible,
   setModalVisible,
@@ -20,6 +17,7 @@ const AddSneakerModal = ({
   alertMessageVisibleSize,
   setAlertMessageVisibleSize,
   newSneaker,
+  setNewSneaker,
   submitSneaker,
   handleOnChange,
   /* EDIT Section props */
@@ -32,17 +30,25 @@ const AddSneakerModal = ({
   image,
   setImage,
   imageAsset,
+  /* AI props  */
+  isAiContentLoaded,
+  aiSneakerResponse,
+  handleAiInput,
+  /* loading AI */
+  loadingAi,
 }) => {
-  const [aiSneakerResponse, setAiSneakerResponse] = useState({});
+  /*   const [aiSneakerResponse, setAiSneakerResponse] = useState([]);
   const [loadingAi, setLoadingAi] = useState(false);
-  const [isAiContentLoaded, setIsAiContentLoaded] = useState(false);
+  const [isAiContentLoaded, setIsAiContentLoaded] = useState(false); */
   const handleOnCancel = () => {
+    setImage(null);
+    setNewSneaker({});
     setModalVisible(false);
     setAlertMessageVisibleSize(false);
     setAlertMessageVisible(false);
     setIsEditing(false);
   };
-  const handleAiInput = async (data) => {
+  /* const handleAiInput = async (data) => {
     setLoadingAi(true);
     const response = await aiService.analyzeImage(data);
     console.log("AI Service Response:", response);
@@ -52,63 +58,56 @@ const AddSneakerModal = ({
       return;
     }
     if (!response?.error) {
-      setAiSneakerResponse(response);
+      setAiSneakerResponse(JSON.parse(response));
+
       setIsAiContentLoaded(true);
       console.log("AI Response Set:", response);
       setLoadingAi(false);
     }
     console.log("Final AI Response:", response);
-  };
-  useEffect(() => {
+  }; */
+  /*   useEffect(() => {
     console.log("AI Sneaker Response Updated:", aiSneakerResponse);
-  }, [aiSneakerResponse]);
+    const { model, brand, color, size } = aiSneakerResponse;
+    setNewSneaker({ model: model, brand: brand, color: color, size: size });
+  }, [aiSneakerResponse]); */
 
   return (
     <Modal
       visible={modalVisible}
       animationType="slide"
-      transparent
+      transparent={true}
       onRequestClose={() => setModalVisible(false)}
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>
-            {isEditing
-              ? "Edit Sneaker"
-              : isAiContentLoaded
-              ? "Add Sneaker (AI Detected)"
-              : "Add Sneaker"}
+            {isEditing ? "Edit Sneaker" : "Add Sneaker"}
           </Text>
 
           <TextInput
-            style={styles.textInputModel}
+            style={styles.textInput}
             placeholder="Enter Brand"
             placeholderTextColor={"#aaa"}
-            value={
-              isEditing
-                ? editedText.brand
-                : isAiContentLoaded
-                ? aiSneakerResponse.brand
-                : newSneaker.brand
-            }
+            value={isEditing ? editedText.brand : newSneaker.brand}
             onChangeText={(e) => handleOnChange(e, "brand")}
           />
           <TextInput
-            style={styles.textInputModel}
+            style={styles.textInput}
             placeholder="Enter Model"
             placeholderTextColor={"#aaa"}
             value={isEditing ? editedText.model : newSneaker.model}
             onChangeText={(e) => handleOnChange(e, "model")}
           />
           <TextInput
-            style={styles.textInputModel}
+            style={styles.textInput}
             placeholder="Enter Color"
             placeholderTextColor={"#aaa"}
             value={isEditing ? editedText.color : newSneaker.color}
-            onChangeText={(e) => handleOnChange(e, "sneaker_color")}
+            onChangeText={(e) => handleOnChange(e, "color")}
           />
           <TextInput
-            style={styles.textInputSize}
+            style={styles.textInput}
             placeholder="Enter Size"
             placeholderTextColor={"#aaa"}
             value={isEditing ? String(editedText.size) : newSneaker.size}
@@ -269,7 +268,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 10,
   },
-  textInputModel: {
+  textInput: {
     borderWidth: 1,
     borderBlockColor: "#ccc",
     borderRadius: 8,

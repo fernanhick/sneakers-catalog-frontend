@@ -133,7 +133,7 @@ const sneakerService = {
       model: sneaker.model || undefined,
       size: parseFloat(sneaker.size) || undefined,
       brand: sneaker.brand || undefined,
-      color: sneaker.sneaker_color || undefined,
+      color: sneaker.color || undefined,
       user_id: userId || undefined,
       image_id: sneaker.image_id || undefined, // Placeholder for future image upload feature
       image_uri: sneaker.image_uri || undefined,
