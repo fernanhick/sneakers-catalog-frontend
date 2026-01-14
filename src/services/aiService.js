@@ -63,9 +63,10 @@ const aiService = {
             },
           ],
         }),
+        /* Signal for Timeout */
         signal: controller.signal,
       });
-
+      /* Clear timeout */
       clearTimeout(timedoutId);
       console.log("AI analyzeImage raw response:", response);
       console.log("Sneaker analysis response status:", response.status);
@@ -80,28 +81,10 @@ const aiService = {
         };
     } catch (error) {
       console.error("Error analyzing sneaker image:", error.message);
+      return { error: error.message || "An error occurred during analysis." };
+
       //throw error;
     }
-
-    /* .then((data) => {
-        console.log("Sneaker analysis response status:", data.status);
-        return data.json();
-      })
-      .then((data) => {
-        console.log(
-          "Sneaker analysis response data:",
-          data.output[0].content[0].text
-        );
-        return data.output[0].content[0].text;
-      })
-      .catch((error) => {
-        console.error("Error in analyzeImage fetch:", error);
-        throw error;
-      })
-      .finally((data) => {
-        console.log("Finished analyzeImage request.");
-        return data;
-      }); */
   },
 };
 

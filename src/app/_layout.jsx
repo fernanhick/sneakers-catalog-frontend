@@ -10,6 +10,8 @@ const RootLayout = () => {
           screenOptions={{
             headerStyle: {
               backgroundColor: "#ff8c00",
+              borderBottomColor: "#353535ff",
+              borderBottomWidth: 2,
             },
             headerTintColor: "#fff",
             headerTitleStyle: {

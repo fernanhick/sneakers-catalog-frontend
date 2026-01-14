@@ -1,5 +1,6 @@
 import AddSneakerModal from "@/src/components/AddSneakerModal";
 import SneakersList from "@/src/components/SneakersList";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { useFocusEffect, useRouter } from "expo-router";
@@ -24,6 +25,7 @@ const SneakerView = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [sneakers, setSneakers] = useState([]);
+  const [iconViewMode, setIconViewMode] = useState(true); // true for grid, false for list
   const navigation = useNavigation();
 
   const router = useRouter();
@@ -245,6 +247,31 @@ const SneakerView = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.topMenu}>
+        {/* ADD SNEAKER BUTTON */}
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={styles.buttonText}>Add Sneaker</Text>
+        </TouchableOpacity>
+        <Text style={styles.topMenuText}>Top</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setIconViewMode((prev) => !prev)}
+        >
+          {iconViewMode ? (
+            <MaterialCommunityIcons name="view-list" size={32} color="white" />
+          ) : (
+            <MaterialCommunityIcons
+              name="view-grid-outline"
+              size={32}
+              color="white"
+            />
+          )}
+        </TouchableOpacity>
+      </View>
       {loading ? (
         <ActivityIndicator size="large" color="#007bff" />
       ) : (
@@ -266,25 +293,12 @@ const SneakerView = () => {
               sneakers={sneakers}
               onDelete={deleteListItem}
               onEdit={editListItem}
+              /* Views */
+              iconViewMode={iconViewMode}
             />
           )}
         </>
       )}
-
-      {/* ADD SNEAKER BUTTON */}
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.buttonText}>Add Sneaker</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.navigate("screens/AddSneakerScreen")}
-      >
-        <Text style={styles.buttonText}>Test Bottom Sheet</Text>
-      </TouchableOpacity>
 
       {/* MODAL */}
       <AddSneakerModal
@@ -320,18 +334,45 @@ const SneakerView = () => {
 };
 
 const styles = StyleSheet.create({
+  topMenu: {
+    flexDirection: "row",
+    backgroundColor: "#414141ff",
+    height: 50,
+    padding: 5,
+    justifyContent: "space-between",
+    borderBottomColor: "#7a7a7aff",
+    borderBottomWidth: 1,
+  },
+  buttonView: {
+    backgroundColor: "#474747ff",
+    borderColor: "#fff",
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    alignItems: "center",
+  },
+  topMenuText: {
+    width: 50,
+    backgroundColor: "green",
+  },
   container: {
+    flex: 1,
     width: "100%",
     height: "100%",
-    padding: 20,
+    padding: 0,
     paddingBottom: 100,
     backgroundColor: "#000",
   },
   button: {
     backgroundColor: "#474747ff",
-    borderColor: "#fff",
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    borderBottomColor: "#a8a8a8ff",
+    borderBottomWidth: 1,
+    borderRightColor: "#a8a8a8ff",
+    borderRightWidth: 1,
+    justifyContent: "center",
+    paddingHorizontal: 8,
+    paddingVertical: 2,
     borderRadius: 10,
     borderWidth: 0.5,
     alignItems: "center",
