@@ -1,4 +1,5 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -39,9 +40,8 @@ const AddSneakerModal = ({
   /* BottomSheet */
   handleClosePress,
 }) => {
-  /*   const [aiSneakerResponse, setAiSneakerResponse] = useState([]);
-  const [loadingAi, setLoadingAi] = useState(false);
-  const [isAiContentLoaded, setIsAiContentLoaded] = useState(false); */
+  const { focusedField, setFocusedField } = useState(null);
+
   const handleOnCancel = () => {
     setImage(null);
     setNewSneaker({});
@@ -51,30 +51,6 @@ const AddSneakerModal = ({
     setIsEditing(false);
     handleClosePress();
   };
-  /* const handleAiInput = async (data) => {
-    setLoadingAi(true);
-    const response = await aiService.analyzeImage(data);
-    console.log("AI Service Response:", response);
-    if (response?.error) {
-      Alert.alert("AI Error", response.error);
-      setLoadingAi(false);
-      return;
-    }
-    if (!response?.error) {
-      setAiSneakerResponse(JSON.parse(response));
-
-      setIsAiContentLoaded(true);
-      console.log("AI Response Set:", response);
-      setLoadingAi(false);
-    }
-    console.log("Final AI Response:", response);
-  }; */
-  /*   useEffect(() => {
-    console.log("AI Sneaker Response Updated:", aiSneakerResponse);
-    const { model, brand, color, size } = aiSneakerResponse;
-    setNewSneaker({ model: model, brand: brand, color: color, size: size });
-  }, [aiSneakerResponse]); */
-
   return (
     <ScrollView style={styles.modalContent}>
       <Text style={styles.modalTitle}>
@@ -102,6 +78,7 @@ const AddSneakerModal = ({
         value={isEditing ? editedText.color : newSneaker.color}
         onChangeText={(e) => handleOnChange(e, "color")}
       />
+
       <TextInput
         style={styles.textInput}
         placeholder="Enter Size"
@@ -148,17 +125,17 @@ const AddSneakerModal = ({
         ) : (
           <View
             style={{
-              height: 100,
+              //height: 100,
               justifyContent: "center",
               gap: 10,
             }}
           >
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.saveButton}
               onPress={() => uploadImage()}
             >
               <Text style={styles.saveButtonText}>Upload Image</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.saveButton}
               onPress={() => uploadImage()}

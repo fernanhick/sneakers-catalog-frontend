@@ -207,7 +207,8 @@ const SneakerView = () => {
       }
     });
     setIsEditing(true);
-    setModalVisible(true);
+    //setModalVisible(true);
+    handleSnapPress(2);
   };
 
   // Extract validation function
@@ -251,7 +252,7 @@ const SneakerView = () => {
   // hooks
   const sheetRef = useRef(null);
 
-  const snapPoints = useMemo(() => ["25%", "50%", "90%"], []);
+  const snapPoints = useMemo(() => ["25%", "50%", "80%"], []);
 
   // callbacks
   const handleSheetChange = useCallback((index) => {
