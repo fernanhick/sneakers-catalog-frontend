@@ -7,7 +7,11 @@ const authService = {
   async register(email, password) {
     try {
       console.log(email, password);
-      const response = await account.create(ID.unique(), email, password);
+      const response = await account.create({
+        userID: ID.unique(),
+        email,
+        password,
+      });
       return response;
     } catch (error) {
       console.log("Trying to register");
@@ -43,7 +47,7 @@ const authService = {
   // Logout User
   async logout() {
     try {
-      await account.deleteSession("current");
+      await account.deleteSession({ sessionId: "current" });
     } catch (error) {
       return {
         error: error.message || "Logout Failed.",

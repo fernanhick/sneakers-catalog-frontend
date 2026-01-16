@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/AppIcons/android/mipmap-hdpi/ic_launcher.png",
-    "scheme": "sneakerscatalogfrontend",
+    "scheme": "appwrite-callback-6946b3240010dd2b3da5",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
