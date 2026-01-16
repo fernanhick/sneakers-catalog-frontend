@@ -143,6 +143,7 @@ const SneakerView = () => {
     setAlertMessageVisibleSize(false);
     setAiSneakerResponse([]);
     setIsAiContentLoaded(false);
+    handleClosePress();
   };
   /* Update Sneaker Items */
   const submitSneakerEdit = async () => {
